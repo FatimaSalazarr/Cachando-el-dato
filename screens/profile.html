@@ -1,0 +1,55 @@
+<section id="profile-screen" class="tab-screen">
+  <h2 class="screen-title">PERFIL</h2>
+  
+  <div class="profile-card">
+    <div class="avatar-ring">
+      <i class="fa-solid fa-user"></i>
+    </div>
+    <div class="user-details">
+      <h3 id="profile-username">ac</h3>
+      <p id="profile-email">ac@gmail.com</p>
+      <span class="pts-accent" id="profile-points">80 pts</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <span class="stat-val" id="stat-items">2</span>
+      <span class="stat-lbl">OBJETOS</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-val gold" id="stat-pts">80</span>
+      <span class="stat-lbl">PUNTOS</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-val blue" id="stat-rare">1</span>
+      <span class="stat-lbl">RAROS</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-val gold" id="stat-legendary">0</span>
+      <span class="stat-lbl">LEGENDARIOS</span>
+    </div>
+  </div>
+
+  <button class="btn-primary btn-logout" onclick="logout()">CERRAR SESIÓN</button>
+
+  <p class="section-label">INVENTARIO - <span id="inventory-count">2 OBJETOS</span></p>
+  <div class="inventory-grid" id="inventory-container">
+    <div class="slot filled common">
+      <span class="slot-rarity">C</span>
+      <strong>TOM</strong>
+      <small>CALCOMANÍA TOMATEROS</small>
+    </div>
+    <div class="slot filled rare">
+      <span class="slot-rarity">R</span>
+      <strong>LIG</strong>
+      <small>TARJETA JUGADOR</small>
+    </div>
+    <div class="slot empty"></div>
+    <div class="slot empty"></div>
+    <div class="slot empty"></div>
+    <div class="slot empty"></div>
+    <div class="slot empty"></div>
+    <div class="slot empty"></div>
+  </div>
+</section>

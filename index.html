@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cachando el Dato - AR & LMN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Librerías para Realidad Aumentada -->
+<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body>
+
+  <div class="mobile-frame">
+    <!-- AUTENTICACIÓN -->
+    <section id="login-screen" class="screen active">
+      <div class="auth-box">
+        <div class="logo-badge">
+          <img src="img/logo1.png" alt="Logo de Cachando el Dato" style="width: 120%; height: 100%; object-fit: contain;">
+        </div>
+        <h1 class="title">LOGIN</h1>
+        <p class="subtitle">CACHANDO EL DATO</p>
+
+        <div class="form-group">
+          <label>USUARIO</label>
+          <input type="email" id="login-email" placeholder="correo@ejemplo.com" value="correo@ejemplo.com">
+        </div>
+
+        <div class="form-group">
+          <label>CONTRASEÑA</label>
+          <input type="password" id="login-password" placeholder="••••••••" value="password">
+        </div>
+
+        <button class="btn-primary" onclick="navigateToApp('home-screen')">ENTRAR</button>
+        <p class="auth-link">¿Sin cuenta? <span onclick="switchAuthScreen('register-screen')">Registro</span></p>
+      </div>
+    </section>
+
+    <section id="register-screen" class="screen">
+      <div class="auth-box">
+        <div class="logo-badge">
+          <img src="img/logo1.png" alt="Logo de Cachando el Dato" style="width: 120%; height: 100%; object-fit: contain;">
+        </div>
+        <h1 class="title">REGISTRO</h1>
+        <p class="subtitle">CACHANDO EL DATO</p>
+
+        <div class="form-group">
+          <label>NOMBRE</label>
+          <input type="text" placeholder="Tu nombre">
+        </div>
+
+        <div class="form-group">
+          <label>CORREO</label>
+          <input type="email" placeholder="correo@ejemplo.com">
+        </div>
+
+        <div class="form-group">
+          <label>CONTRASEÑA</label>
+          <input type="password" placeholder="Mín. 6 caracteres">
+        </div>
+
+        <button class="btn-primary" onclick="navigateToApp('home-screen')">REGISTRAR</button>
+        <p class="auth-link">¿Ya tienes cuenta? <span onclick="switchAuthScreen('login-screen')">Iniciar sesión</span></p>
+      </div>
+    </section>
+
+    <!-- APLICACIÓN PRINCIPAL -->
+    <main id="app-content" class="app-content hidden">
+
+      <!-- INICIO -->
+      <section id="home-screen" class="tab-screen active">
+        <header class="top-bar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Buscar equipos, jugadores...">
+          </div>
+          <div class="points-badge"><i class="fa-solid fa-coins"></i> <span class="user-pts-display">80</span> pts</div>
+        </header>
+
+        <h2 class="page-title">CACHANDO <span>EL DATO</span></h2>
+        <p class="league-sub">LIGA MEXICANA DEL NORTE · TEMPORADA</p>
+
+        <!-- 1. CARRUSEL DE NOTICIAS -->
+        <p class="section-label"><i class="fa-solid fa-newspaper"></i> NOTICIAS ACTUALES</p>
+        <div class="news-carousel-container prominent-news">
+          <div class="news-carousel-track" id="news-track">
+            <div class="news-slide active">
+              <span class="team-tag tag-cul">ALG</span>
+              <h4>Algodoneros domina la temporada con 12 victorias consecutivas</h4>
+              <p>Gran exhibición de pitcheo y ofensiva en la gira por el norte.</p>
+              <span class="news-time">Hace 2 horas</span>
+            </div>
+            <div class="news-slide">
+              <span class="team-tag tag-her">CAL</span>
+              <h4>Calientes asegura serie clave en casa con cuadrangular dramático</h4>
+              <p>El batazo en la novena entrada desató la euforia en Durango.</p>
+              <span class="news-time">Hace 5 horas</span>
+            </div>
+            <div class="news-slide">
+              <span class="team-tag tag-obr">CHA</span>
+              <h4>Charros refuerza su rotación abridora rumbo a la postemporada</h4>
+              <p>La directiva anuncia la contratación de estelar lanzador internacional.</p>
+              <span class="news-time">Ayer</span>
+            </div>
+          </div>
+          <div class="carousel-dots" id="carousel-dots">
+            <span class="dot active" onclick="currentSlide(0)"></span>
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+          </div>
+        </div>
+
+        <!-- 2. PRÓXIMOS PARTIDOS -->
+        <p class="section-label"><i class="fa-solid fa-calendar-days"></i> PRÓXIMOS PARTIDOS</p>
+        <div class="upcoming-games-list">
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="match-team-item">
+                <img src="img/algodoneros.png" alt="Algodoneros" class="match-team-logo">
+              </div>
+              <span class="vs-text">VS</span>
+              <div class="match-team-item">
+                <img src="img/calientes.png" alt="Calientes" class="match-team-logo">
+              </div>
+            </div>
+            <div class="match-info">
+              <p><i class="fa-solid fa-building-columns"></i> Estadio Kuroda Park</p>
+              <p><i class="fa-solid fa-clock"></i> Jueves 20 Ago · 7:30 PM</p>
+            </div>
+          </div>
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="match-team-item">
+                <img src="img/charros.png" alt="Charros" class="match-team-logo">
+              </div>
+              <span class="vs-text">VS</span>
+              <div class="match-team-item">
+                <img src="img/dorados.png" alt="Dorados" class="match-team-logo">
+              </div>
+            </div>
+            <div class="match-info">
+              <p><i class="fa-solid fa-building-columns"></i> Estadio Panamericano</p>
+              <p><i class="fa-solid fa-clock"></i> Viernes 21 Ago · 8:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. EQUIPOS DE LA LIGA -->
+        <p class="section-label"><i class="fa-solid fa-shield-halved"></i> EQUIPOS DE LA LIGA DEL NORTE</p>
+        <div class="teams-cube-grid">
+          <div class="team-cube-item" onclick="openTeamDetail('alg')">
+            <div class="cube-logo-badge"><img src="img/algodoneros.png" alt="Algodoneros"></div>
+            <span>Algodoneros</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('cal')">
+            <div class="cube-logo-badge"><img src="img/calientes.png" alt="Calientes"></div>
+            <span>Calientes</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('cha')">
+            <div class="cube-logo-badge"><img src="img/charros.png" alt="Charros"></div>
+            <span>Charros</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('dor')">
+            <div class="cube-logo-badge"><img src="img/dorados.png" alt="Dorados"></div>
+            <span>Dorados</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('ace')">
+            <div class="cube-logo-badge"><img src="img/Logoacerero.png" alt="Acereros"></div>
+            <span>Acereros</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('rie')">
+            <div class="cube-logo-badge"><img src="img/RielerosCapLogo.png" alt="Rieleros"></div>
+            <span>Rieleros</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('tec')">
+            <div class="cube-logo-badge"><img src="img/Logotecos.png" alt="Tecos"></div>
+            <span>Tecos</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('tor')">
+            <div class="cube-logo-badge"><img src="img/Logotoros.png" alt="Toros"></div>
+            <span>Toros</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('sul')">
+            <div class="cube-logo-badge"><img src="img/sultanes.png" alt="Sultanes"></div>
+            <span>Sultanes</span>
+          </div>
+          <div class="team-cube-item" onclick="openTeamDetail('soc')">
+            <div class="cube-logo-badge"><img src="img/socaleros.png" alt="Saraperos"></div>
+            <span>Saraperos</span>
+          </div>
+        </div>
+
+        <!-- 4. HISTORIA DEL BÉISBOL -->
+        <p class="section-label"><i class="fa-solid fa-book-open"></i> HISTORIA DEL BÉISBOL</p>
+        <button class="btn-history-action" onclick="openHistoryModal()">
+          <i class="fa-solid fa-book-bookmark"></i> VER HISTORIA DE BÉISBOL
+        </button>
+      </section>
+
+      <!-- DETALLE DEL EQUIPO -->
+      <section id="team-detail-screen" class="tab-screen">
+        <div class="detail-header-nav">
+          <button class="back-btn" onclick="backToHome()">
+            <i class="fa-solid fa-arrow-left"></i> REGRESAR
+          </button>
+          <button class="btn-top-ar" onclick="openVRFromDetail()">
+            <i class="fa-solid fa-vr-cardboard"></i> REALIDAD AUMENTADA
+          </button>
+        </div>
+
+        <div class="modal-header-title">
+          <h2 id="detail-team-name">Algodoneros de Guasave</h2>
+        </div>
+
+        <div class="modal-banner">
+          <img id="detail-team-img" src="" alt="Estadio" onerror="this.src='https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80';">
+          <div class="banner-overlay">
+            <span id="detail-team-tag" class="team-tag banner-tag">ALG</span>
+            <span class="banner-caption"><i class="fa-solid fa-camera"></i> VISTA EN VIVO</span>
+          </div>
+        </div>
+
+        <div class="gallery-section">
+          <p class="modal-subheading"><i class="fa-solid fa-images"></i> GALERÍA DEL ESTADIO</p>
+          <div id="detail-stadium-gallery" class="modal-gallery-grid"></div>
+        </div>
+
+        <div class="modal-body">
+          <div class="info-group">
+            <label><i class="fa-solid fa-location-dot"></i> CIUDAD</label>
+            <p id="detail-team-city">Guasave, Sinaloa</p>
+          </div>
+          <div class="info-group">
+            <label><i class="fa-solid fa-building-columns"></i> ESTADIO</label>
+            <p id="detail-team-stadium">Estadio Kuroda Park</p>
+          </div>
+          <div class="info-group">
+            <label><i class="fa-solid fa-users"></i> CAPACIDAD</label>
+            <p id="detail-team-capacity">8,000 Espectadores</p>
+          </div>
+          <div class="info-group">
+            <label><i class="fa-solid fa-trophy"></i> TÍTULOS</label>
+            <p id="detail-team-titles">1 Título de Liga</p>
+          </div>
+          <div class="info-group">
+            <label><i class="fa-solid fa-calendar-days"></i> FUNDACIÓN</label>
+            <p id="detail-team-founded">1970</p>
+          </div>
+          <div class="info-group">
+            <label><i class="fa-solid fa-shield-halved"></i> APODO</label>
+            <p id="detail-team-nickname">La Furia Algodonera</p>
+          </div>
+        </div>
+
+        <p class="modal-subheading"><i class="fa-solid fa-id-badge"></i> PLANTILLA Y CUERPO TÉCNICO</p>
+        <div class="info-group full-width manager-box">
+          <div class="manager-avatar"><i class="fa-solid fa-user-tie"></i></div>
+          <div class="manager-details">
+            <label>MANAGER / ESTRATEGA</label>
+            <p id="detail-team-manager">Oswaldo Morejón</p>
+          </div>
+        </div>
+
+        <div class="roster-container">
+          <p class="modal-subheading" style="margin-bottom: 10px;"><i class="fa-solid fa-baseball-bat-ball"></i> JUGADORES DESTACADOS</p>
+          <div id="detail-team-roster" class="roster-grid"></div>
+        </div>
+
+        <div class="info-group full-width story-card">
+          <label><i class="fa-solid fa-circle-info"></i> HISTORIA</label>
+          <p id="detail-team-desc">Descripción...</p>
+        </div>
+
+        <button class="btn-bottom-trivia" onclick="goToTriviaFromDetail()">
+          <i class="fa-solid fa-circle-question"></i> IR A TRIVIA
+        </button>
+      </section>
+
+      <!-- GACHA -->
+      <section id="gacha-screen" class="tab-screen">
+        <div class="gacha-stage">
+          <svg class="gacha-svg-bg" viewBox="0 0 360 700" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="50%" stop-color="#0369a1" />
+                <stop offset="100%" stop-color="#075985" />
+              </linearGradient>
+              <linearGradient id="grassGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#15803d" />
+                <stop offset="100%" stop-color="#166534" />
+              </linearGradient>
+              <linearGradient id="dirtGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#b45309" />
+                <stop offset="100%" stop-color="#78350f" />
+              </linearGradient>
+            </defs>
+            <rect width="360" height="700" fill="url(#skyGrad)" />
+            <g class="animated-clouds">
+              <ellipse cx="90" cy="120" rx="45" ry="16" fill="#ffffff" opacity="0.15" />
+              <ellipse cx="270" cy="180" rx="60" ry="20" fill="#ffffff" opacity="0.1" />
+              <ellipse cx="180" cy="80" rx="50" ry="18" fill="#ffffff" opacity="0.12" />
+            </g>
+            <circle cx="180" cy="130" r="150" fill="#ffffff" opacity="0.1" />
+            <path d="M 0 410 Q 180 340 360 410 V 700 H 0 Z" fill="url(#grassGrad)" />
+            <ellipse cx="180" cy="425" rx="85" ry="28" fill="url(#dirtGrad)" />
+          </svg>
+
+          <div class="baseball-graphic" id="baseball-ball">
+            <i class="fa-solid fa-baseball"></i>
+          </div>
+
+          <div class="bat-graphic" id="baseball-bat">
+            <svg viewBox="0 0 100 200" class="bat-svg">
+              <path d="M 41 190 C 41 197 59 197 59 190 C 59 184 55 184 55 178 L 55 135 C 55 80 65 55 65 20 C 65 6 35 6 35 20 C 35 55 45 80 45 135 L 45 178 C 45 184 41 184 41 190 Z" fill="#ffd700" stroke="#ff9100" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="gacha-ui-top">
+          <div class="gacha-header-row">
+            <h2>GACHA</h2>
+            <div class="points-badge-style">
+              <i class="fa-solid fa-coins"></i> <span class="user-pts-display">80</span> PTS
+            </div>
+          </div>
+        </div>
+
+        <div class="gacha-ui-bottom">
+          <button class="btn-primary-gacha" id="btn-launch" onclick="triggerGacha()">LANZA LA PELOTA – 50 PTS</button>
+        </div>
+      </section>
+
+      <!-- TRIVIA (DISEÑO ESTILO KAHOOT) -->
+      <section id="trivia-screen" class="tab-screen">
+        <h2 class="screen-title">TRIVIA</h2>
+
+        <div id="trivia-welcome" class="trivia-card full-card">
+          <div class="baseball-circle">
+            <i class="fa-solid fa-baseball"></i>
+          </div>
+          <h3>TRIVIA DE BÉISBOL</h3>
+          <p>Responde 5 preguntas. Gana 10 puntos por cada respuesta correcta.</p>
+          <p class="current-pts">Puntos actuales: <span class="user-pts-display">80</span></p>
+          <button class="btn-primary" onclick="startTrivia()">COMENZAR</button>
+        </div>
+
+        <!-- Cuestionario con Estilo Kahoot -->
+        <div id="trivia-quiz" class="trivia-card kahoot-quiz-card full-card hidden">
+          <div class="kahoot-top-row">
+            <div id="trivia-timer" class="kahoot-timer-circle">20</div>
+            <div class="kahoot-header-info">
+              <span id="trivia-progress" class="quiz-step">PREGUNTA 1 DE 5</span>
+              <span id="trivia-score" class="quiz-score">0 PTS</span>
+            </div>
+          </div>
+          <h3 id="trivia-question" class="quiz-question">¿Cargando pregunta?</h3>
+          <div id="trivia-options" class="kahoot-options-grid"></div>
+          <button id="trivia-next-btn" class="btn-primary hidden" onclick="nextQuestion()" style="margin-top: 15px;">SIGUIENTE</button>
+        </div>
+
+        <div id="trivia-result" class="trivia-card full-card hidden">
+          <div class="baseball-circle gold-circle">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <h3>¡TRIVIA TERMINADA!</h3>
+          <div class="score-ratio-box">
+            <span id="trivia-ratio" class="score-ratio">3/5</span>
+            <span class="score-ratio-label">RESPUESTAS CORRECTAS</span>
+          </div>
+          <p id="trivia-final-message">Respondiste correctamente...</p>
+          <p class="current-pts">Total acumulado: <span class="user-pts-display">80</span> pts</p>
+          <button class="btn-primary" onclick="resetTrivia()">VOLVER A JUGAR</button>
+        </div>
+      </section>
+
+      <!-- PERFIL -->
+      <section id="profile-screen" class="tab-screen">
+        <h2 class="screen-title">PERFIL</h2>
+        <div class="profile-card">
+          <div class="avatar-ring">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h3>ac</h3>
+            <p>ac@gmail.com</p>
+            <span class="pts-accent"><i class="fa-solid fa-coins"></i> <span class="user-pts-display">80</span> pts</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box"><span class="stat-val">2</span><span class="stat-lbl">OBJETOS</span></div>
+          <div class="stat-box"><span class="stat-val gold user-pts-display">80</span><span class="stat-lbl">PUNTOS</span></div>
+          <div class="stat-box"><span class="stat-val blue">1</span><span class="stat-lbl">RAROS</span></div>
+          <div class="stat-box"><span class="stat-val gold">0</span><span class="stat-lbl">LEGENDARIOS</span></div>
+        </div>
+
+        <button class="btn-primary btn-logout" onclick="logout()">CERRAR SESIÓN</button>
+
+        <p class="section-label"><i class="fa-solid fa-box-open"></i> INVENTARIO - 2 OBJETOS</p>
+        <div class="inventory-grid">
+          <div class="slot filled common"><span class="slot-rarity">C</span><strong>ALG</strong><small>CALCOMANÍA</small></div>
+          <div class="slot filled rare"><span class="slot-rarity">R</span><strong>LIG</strong><small>TARJETA</small></div>
+          <div class="slot empty"></div><div class="slot empty"></div>
+          <div class="slot empty"></div><div class="slot empty"></div>
+          <div class="slot empty"></div><div class="slot empty"></div>
+        </div>
+      </section>
+
+      <!-- NAVEGACIÓN INFERIOR -->
+      <nav class="bottom-tab-bar">
+        <button class="tab-btn active" onclick="switchTab('home-screen', this)">
+          <i class="fa-solid fa-house"></i>
+          <span>INICIO</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('gacha-screen', this)">
+          <i class="fa-solid fa-baseball-bat-ball"></i>
+          <span>GACHA</span>
+        </button>
+        <div class="center-btn-wrapper">
+          <div class="glow-effect"></div>
+          <button class="center-btn" onclick="openScannerView()">
+            <i class="fa-solid fa-camera"></i>
+          </button>
+        </div>
+        <button class="tab-btn" onclick="switchTab('trivia-screen', this)">
+          <i class="fa-solid fa-circle-question"></i>
+          <span>TRIVIA</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('profile-screen', this)">
+          <i class="fa-solid fa-user"></i>
+          <span>PERFIL</span>
+        </button>
+      </nav>
+    </main>
+
+    <!-- MODAL HISTORIA DE BÉISBOL -->
+    <div id="history-modal" class="history-modal-overlay hidden">
+      <div class="history-modal-container">
+        <button class="close-modal-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="history-modal-header">
+          <div class="history-modal-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+          <div>
+            <span class="history-modal-tag">ENCICLOPEDIA DEL REY</span>
+            <h2>HISTORIA DEL BÉISBOL</h2>
+          </div>
+        </div>
+        <div class="history-modal-scroll">
+          <div class="history-hero-banner">
+            <img src="https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80" alt="Béisbol Histórico">
+            <div class="history-hero-caption"><i class="fa-solid fa-camera"></i> Archivo Histórico Tradicional</div>
+          </div>
+          <div class="history-chapter-box">
+            <h4><i class="fa-solid fa-globe"></i> Los Orígenes Globales</h4>
+            <p>El béisbol moderno tiene sus raíces profundas en los juegos tradicionales de bate y pelota practicados en Inglaterra durante el siglo XVIII...</p>
+          </div>
+          <div class="history-chapter-box">
+            <h4><i class="fa-solid fa-flag"></i> La Llegada a México</h4>
+            <p>A <strong>México</strong> el béisbol arribó a finales del siglo XIX a través de los estados fronterizos del norte...</p>
+          </div>
+          <div class="history-chapter-box">
+            <h4><i class="fa-solid fa-trophy"></i> El Auge del Norte</h4>
+            <p>La <strong>Liga Mexicana del Norte</strong> y los circuitos invernales han forjado una rica leyenda de entrega absoluta...</p>
+          </div>
+        </div>
+        <div class="history-modal-footer">
+          <button class="btn-primary" onclick="closeHistoryModal()">¡ENTENDIDO!</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- MODAL REALIDAD VIRTUAL Y CÁMARA -->
+    <div id="ar-experience-modal" class="camera-modal hidden">
+      <!-- Botón para cerrar (Z-index altísimo para que no se oculte) -->
+      <button class="close-camera-btn" onclick="closeARView()" style="z-index: 9999;"><i class="fa-solid fa-xmark"></i></button>
+      
+      <!-- ESCENA DE MIND-AR (Reemplaza al <video> y a tu canvas manual) -->
+      <div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+        <!-- El atributo "embedded" es crucial para que no rompa tu CSS -->
+        <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+          
+          <a-assets>
+            <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
+            <!-- Puedes añadir un modelo genérico u otro equipo aquí -->
+            <a-asset-item id="modeloGenerico" src="./modelos/pelota3d.glb"></a-asset-item>
+          </a-assets>
+
+          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+          <!-- Marcador 0: Logo 1 -->
+          <a-entity mindar-image-target="targetIndex: 0">
+            <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="0.5 0.5 0.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+          </a-entity>
+
+          <!-- Marcador 1: Logo 2 -->
+          <a-entity mindar-image-target="targetIndex: 1">
+            <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.5 0.5 0.5" src="#modeloGenerico"></a-gltf-model>
+          </a-entity>
+        </a-scene>
+      </div>
+
+      <!-- UI INTERACTIVA SUPERPUESTA (Cumple con los controles solicitados en la rúbrica) -->
+      <div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">
+        <!-- Espaciador invisible para empujar los botones al fondo de la pantalla -->
+        <div style="flex: 1;"></div>
+        
+        <!-- Caja de botones (pointer-events: auto permite que se puedan clickear) -->
+        <div style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; padding-bottom: 20px;">
+          <div class="ar-action-buttons">
+            <!-- Estos botones cumplen con: "Activar animaciones o efectos visuales" -->
+            <button class="cube-btn-green" onclick="toggleModelSpin()"><i class="fa-solid fa-rotate-right"></i><span>GIRAR</span></button>
+            <button class="cube-btn-green" onclick="triggerConfetti()"><i class="fa-solid fa-wand-magic-sparkles"></i><span>CONFETI</span></button>
+          </div>
+          
+          <div class="ar-reduced-info-card">
+            <h3 id="ar-team-title">Algodoneros de Guasave</h3>
+            <p id="ar-team-summary">Equipo de la liga.</p>
+          </div>
+          
+          <button class="btn-red-ver-mas" onclick="openFullInfoFromAR()">VER MÁS DETALLES</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL PUNTOS INSUFICIENTES -->
+    <div id="no-points-modal" class="modal-screen hidden">
+      <div class="modal-card notice-card">
+        <button class="close-modal-btn" onclick="closeNoPointsModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="notice-icon warning"><i class="fa-solid fa-coins"></i></div>
+        <h2>PUNTOS INSUFICIENTES</h2>
+        <p>Necesitas al menos <strong>50 PTS</strong> para lanzar en el Gacha.</p>
+        <button class="btn-primary" onclick="closeNoPointsModal()">ENTENDIDO</button>
+      </div>
+    </div>
+
+    <!-- MODAL PREMIO GACHA -->
+    <div id="reward-modal" class="modal-screen hidden">
+      <div class="modal-card reward-card-enhanced">
+        <button class="close-modal-btn" onclick="closeRewardModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="reward-glow-ring">
+          <div class="reward-icon-circle"><i class="fa-solid fa-trophy" id="reward-icon"></i></div>
+        </div>
+        <div class="reward-meta-box">
+          <span class="rarity-badge-enhanced" id="reward-rarity">RARO</span>
+          <h2>¡HOME RUN!</h2>
+          <p id="reward-title" class="reward-item-name">Tarjeta Rara</p>
+          <p id="reward-desc" class="reward-item-desc">Artículo obtenido con éxito.</p>
+        </div>
+        <button class="btn-primary btn-gold-enhanced" onclick="closeRewardModal()">¡OBTENER PREMIO!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

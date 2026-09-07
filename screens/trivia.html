@@ -1,0 +1,22 @@
+<section id="trivia-screen" class="tab-screen">
+  <h2 class="screen-title">TRIVIA</h2>
+  
+  <div class="trivia-card" id="trivia-start-card">
+    <div class="baseball-circle">
+      <i class="fa-solid fa-baseball"></i>
+    </div>
+    <h3>TRIVIA DE BÉISBOL</h3>
+    <p>6 preguntas sobre la Liga Mexicana del Norte. Gana 10 puntos por cada respuesta correcta.</p>
+    <p class="current-pts">Puntos actuales: <span id="trivia-points">80</span></p>
+    <button class="btn-primary" onclick="startTrivia()">COMENZAR</button>
+  </div>
+
+  <!-- Contenedor dinámico de preguntas -->
+  <div class="trivia-quiz-container hidden" id="trivia-quiz">
+    <div class="quiz-progress">Pregunta <span id="quiz-step">1</span> de 6</div>
+    <h4 id="quiz-question" class="quiz-question-text">¿Quién ostenta más títulos en la Liga?</h4>
+    <div class="quiz-options" id="quiz-options">
+      <!-- Inyectado mediante JavaScript -->
+    </div>
+  </div>
+</section>
