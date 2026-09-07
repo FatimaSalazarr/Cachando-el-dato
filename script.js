@@ -717,18 +717,54 @@ async function openScannerView() {
 
 function abrirEscenaAR() {
   const container = document.getElementById('ar-3d-container');
-  // Inyecta el motor de AR y la cámara únicamente en este momento
+  
   container.innerHTML = `
     <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
       </a-assets>
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      
+      <!-- Marcador 0: Acereros -->
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0">
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      </a-entity>
+
+      <!-- Marcador 1: Otro equipo (Ej. Algodoneros) -->
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1">
+        <!-- Aquí puedes poner su modelo o dejar el mismo por ahora -->
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
       </a-entity>
     </a-scene>
   `;
+
+  // Mapeo de índices de MindAR con tus objetos de teamsData
+  const mapeoEquipos = {
+    0: 'ace', // El índice 0 activa los datos de Acereros
+    1: 'alg'  // El índice 1 activa los datos de Algodoneros
+  };
+
+  // Esperamos a que la escena cargue para enlazar los eventos de la cámara
+  setTimeout(() => {
+    Object.keys(mapeoEquipos).forEach(index => {
+      const targetEntity = document.querySelector(`#target-${index}`);
+      if (targetEntity) {
+        targetEntity.addEventListener('targetFound', () => {
+          const teamKey = mapeoEquipos[index];
+          const team = teamsData[teamKey];
+          
+          if (team) {
+            // Actualizamos globalmente la referencia del equipo seleccionado
+            currentSelectedTeamKey = teamKey;
+
+            // Cambiamos dinámicamente el texto de la tarjeta inferior
+            document.getElementById('ar-team-title').textContent = team.name;
+            document.getElementById('ar-team-summary').textContent = `${team.city} · ${team.stadium}`;
+          }
+        });
+      }
+    });
+  }, 1000);
 }
 
 // ============================================================
