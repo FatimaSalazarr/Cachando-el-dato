@@ -718,6 +718,10 @@ async function openScannerView() {
 function abrirEscenaAR() {
   const container = document.getElementById('ar-3d-container');
   
+  // Limpiamos el texto por defecto al abrir el escáner
+  document.getElementById('ar-team-title').textContent = "Buscando marcador...";
+  document.getElementById('ar-team-summary').textContent = "Apunta con la cámara al logo de un equipo.";
+
   container.innerHTML = `
     <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
@@ -727,24 +731,23 @@ function abrirEscenaAR() {
       
       <!-- Marcador 0: Acereros -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0">
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
       </a-entity>
 
-      <!-- Marcador 1: Otro equipo (Ej. Algodoneros) -->
+      <!-- Marcador 1: Algodoneros (u otro equipo) -->
       <a-entity id="target-1" mindar-image-target="targetIndex: 1">
-        <!-- Aquí puedes poner su modelo o dejar el mismo por ahora -->
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
       </a-entity>
     </a-scene>
   `;
 
   // Mapeo de índices de MindAR con tus objetos de teamsData
   const mapeoEquipos = {
-    0: 'ace', // El índice 0 activa los datos de Acereros
-    1: 'alg'  // El índice 1 activa los datos de Algodoneros
+    0: 'ace', // Índice 0 -> Acereros
+    1: 'alg'  // Índice 1 -> Algodoneros
   };
 
-  // Esperamos a que la escena cargue para enlazar los eventos de la cámara
+  // Escuchadores de eventos para detectar cuando el marcador entra en la mira
   setTimeout(() => {
     Object.keys(mapeoEquipos).forEach(index => {
       const targetEntity = document.querySelector(`#target-${index}`);
@@ -754,13 +757,18 @@ function abrirEscenaAR() {
           const team = teamsData[teamKey];
           
           if (team) {
-            // Actualizamos globalmente la referencia del equipo seleccionado
             currentSelectedTeamKey = teamKey;
 
-            // Cambiamos dinámicamente el texto de la tarjeta inferior
+            // Actualiza la tarjeta con los datos reales del equipo escaneado
             document.getElementById('ar-team-title').textContent = team.name;
             document.getElementById('ar-team-summary').textContent = `${team.city} · ${team.stadium}`;
           }
+        });
+
+        // Opcional: Si el usuario retira el marcador, la tarjeta vuelve a indicar que está buscando
+        targetEntity.addEventListener('targetLost', () => {
+          document.getElementById('ar-team-title').textContent = "Buscando marcador...";
+          document.getElementById('ar-team-summary').textContent = "Mantén el logo dentro del encuadre.";
         });
       }
     });
