@@ -7,8 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <!-- Librerías para Realidad Aumentada -->
 <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
@@ -486,8 +484,7 @@
           
           <a-assets>
             <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
-            <!-- Puedes añadir un modelo genérico u otro equipo aquí -->
-            <a-asset-item id="modeloGenerico" src="./modelos/pelota3d.glb"></a-asset-item>
+            <!-- Puedes añadir un modelo genérico u otro equipo aquí <a-asset-item id="modeloGenerico" src="./modelos/pelota3d.glb"></a-asset-item>--> 
           </a-assets>
 
           <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -497,10 +494,7 @@
             <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="0.5 0.5 0.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
           </a-entity>
 
-          <!-- Marcador 1: Logo 2 -->
-          <a-entity mindar-image-target="targetIndex: 1">
-            <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.5 0.5 0.5" src="#modeloGenerico"></a-gltf-model>
-          </a-entity>
+        
         </a-scene>
       </div>
 
