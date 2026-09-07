@@ -725,7 +725,7 @@ function abrirEscenaAR() {
       </a-assets>
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
       </a-entity>
     </a-scene>
   `;
