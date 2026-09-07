@@ -479,23 +479,7 @@
       
       <!-- ESCENA DE MIND-AR (Reemplaza al <video> y a tu canvas manual) -->
       <div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
-        <!-- El atributo "embedded" es crucial para que no rompa tu CSS -->
-        <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-          
-          <a-assets>
-            <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
-            <!-- Puedes añadir un modelo genérico u otro equipo aquí <a-asset-item id="modeloGenerico" src="./modelos/pelota3d.glb"></a-asset-item>--> 
-          </a-assets>
-
-          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-          <!-- Marcador 0: Logo 1 -->
-          <a-entity mindar-image-target="targetIndex: 0">
-            <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="0.5 0.5 0.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
-          </a-entity>
-
-        
-        </a-scene>
+      
       </div>
 
       <!-- UI INTERACTIVA SUPERPUESTA (Cumple con los controles solicitados en la rúbrica) -->

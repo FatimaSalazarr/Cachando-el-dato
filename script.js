@@ -637,10 +637,15 @@ function backToHome() {
 }
 
 
-function openVRFromDetail() {
+async function openVRDirectly(teamKey) {
+  currentSelectedTeamKey = teamKey || 'alg';
+  const team = teamsData[currentSelectedTeamKey];
+  if (!team) return;
 
-  openVRDirectly(currentSelectedTeamKey);
-
+  document.getElementById('ar-team-title').textContent = team.name;
+  document.getElementById('ar-team-summary').textContent = `${team.city} · ${team.stadium}`;
+  document.getElementById('ar-experience-modal').classList.remove('hidden');
+  abrirEscenaAR(); // Activa la cámara y el escáner
 }
 
 
@@ -704,24 +709,27 @@ async function openVRDirectly(teamKey) {
 // ABRIR ESCÁNER (Versión corregida para MindAR)
 // ============================================================
 async function openScannerView() {
-  
-  // Ocultamos la vista previa inicial si existe
-  const scannerOverlay = document.getElementById('ar-scanner-overlay');
-  if(scannerOverlay) {
-      scannerOverlay.classList.add('hidden');
-  }
-
-  // Aseguramos que la interfaz de botones esté visible
   document.getElementById('ar-detected-content').classList.remove('hidden');
-
-  // Mostramos el contenedor general de Realidad Aumentada
-  const modal = document.getElementById('ar-experience-modal');
-  modal.classList.remove('hidden');
-
-  // MindAR inicializará la cámara automáticamente al estar visible la etiqueta <a-scene>
-  console.log("Iniciando escáner AR...");
+  document.getElementById('ar-experience-modal').classList.remove('hidden');
+  abrirEscenaAR(); // Activa la cámara y el escáner
 }
 
+
+function abrirEscenaAR() {
+  const container = document.getElementById('ar-3d-container');
+  // Inyecta el motor de AR y la cámara únicamente en este momento
+  container.innerHTML = `
+    <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
+      </a-assets>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      </a-entity>
+    </a-scene>
+  `;
+}
 
 // ============================================================
 // TOMAR FOTO
@@ -740,25 +748,12 @@ function takePhoto() {
 // ============================================================
 
 function closeARView() {
+  // Destruye por completo el DOM de la escena, apagando la cámara y liberando memoria
+  const container = document.getElementById('ar-3d-container');
+  container.innerHTML = ''; 
 
-  if (currentStream) {
-
-    currentStream
-      .getTracks()
-      .forEach(t => t.stop());
-
-    currentStream = null;
-
-  }
-
-
-  document
-    .getElementById('ar-experience-modal')
-    .classList.add('hidden');
-
-
+  document.getElementById('ar-experience-modal').classList.add('hidden');
   isSpinning = false;
-
 }
 
 
