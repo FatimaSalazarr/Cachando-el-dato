@@ -1,0 +1,180 @@
+/* ESCÁNER REALIDAD AUMENTADA */
+.camera-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+#ar-camera-feed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.close-camera-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(11,25,46,0.75);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ar-scanner-view { 
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center; 
+  padding: 40px 20px 35px 20px;
+  background: linear-gradient(180deg, rgba(11,25,46,0.5) 0%, transparent 40%, rgba(11,25,46,0.75) 100%); 
+}
+
+.scanner-header {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.scanner-header h3 {
+  font-family: var(--font-bebas);
+  font-size: 26px;
+  color: var(--text-primary);
+}
+
+.scanner-header p {
+  color: var(--cyan-accent);
+  font-size: 13px;
+}
+
+.btn-camera-capture {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  color: var(--bg-deep);
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  /* Se resetea el margin-bottom para que asiente bien en la base */
+  margin-bottom: 0px; 
+  transition: transform 0.1s ease, background-color 0.2s;
+}
+
+.btn-camera-capture:active {
+  transform: scale(0.92);
+  background: #e2e8f0;
+}
+
+.ar-overlay-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 20px 30px 20px;
+  background: linear-gradient(180deg, rgba(11,25,46,0.4) 0%, rgba(11,25,46,0.85) 100%);
+}
+
+#ar-3d-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ar-action-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.cube-btn-green {
+  width: 80px;
+  height: 68px;
+  background: var(--green-gradient);
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.cube-btn-green:active {
+  transform: scale(0.95);
+}
+
+.cube-btn-green i {
+  font-size: 22px;
+}
+
+.cube-btn-green span {
+  font-family: var(--font-bebas);
+  font-size: 13px;
+}
+
+.ar-reduced-info-card {
+  width: 100%;
+  background: rgba(23,48,88,0.92);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.ar-reduced-info-card h3 {
+  font-family: var(--font-bebas);
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ar-reduced-info-card p {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.btn-red-ver-mas {
+  width: 100%;
+  height: 50px;
+  background: var(--blue-gradient);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: var(--font-bebas);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-cyan);
+}

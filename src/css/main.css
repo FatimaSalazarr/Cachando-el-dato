@@ -1,0 +1,18 @@
+/* BASE */
+@import "./base/variables.css";
+@import "./base/reset.css";
+
+/* COMPONENTES */
+@import "./components/auth-box.css";
+@import "./components/top-bar.css";
+@import "./components/bottom-nav.css";
+@import "./components/cards.css";
+@import "./components/modals.css";
+
+/* VISTAS */
+@import "./views/home.css";
+@import "./views/team-detail.css";
+@import "./views/gacha.css";
+@import "./views/trivia.css";
+@import "./views/profile.css";
+@import "./views/ar-scanner.css";

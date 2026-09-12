@@ -1,0 +1,25 @@
+:root {
+  --bg-deep: #0b192e;
+  --bg-card: rgba(23, 48, 88, 0.88);
+  --bg-card-hover: rgba(30, 64, 118, 0.95);
+  --bg-input: #102444;
+  --border-subtle: rgba(56, 189, 248, 0.2);
+  --border-glow: rgba(255, 215, 0, 0.4);
+  --red-gradient: linear-gradient(135deg, #ff3b5c 0%, #e6002e 100%);
+  --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gold-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --blue-gradient: linear-gradient(135deg, #00d2ff 0%, #0072ff 100%);
+  --cyan-gradient: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+  --red-accent: #ff3b5c;
+  --green-accent: #10b981;
+  --gold-accent: #fbbf24;
+  --cyan-accent: #38bdf8;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --font-bebas: 'Bebas Neue', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+  --shadow-glow-cyan: 0 8px 25px rgba(56, 189, 248, 0.45);
+  --shadow-glow-gold: 0 8px 25px rgba(251, 191, 36, 0.4);
+  --shadow-glow-green: 0 8px 25px rgba(16, 185, 129, 0.45);
+}

@@ -1,0 +1,27 @@
+<div class="auth-box">
+  <div class="logo-badge">
+    <img src="img/logo1.png" alt="Logo de Cachando el Dato" style="width: 120%; height: 100%; object-fit: contain;">
+  </div>
+  <h1 class="title">REGISTRO</h1>
+  <p class="subtitle">CACHANDO EL DATO</p>
+
+  <form id="register-form" onsubmit="event.preventDefault();">
+    <div class="form-group">
+      <label for="register-name">NOMBRE</label>
+      <input type="text" id="register-name" placeholder="Tu nombre" required>
+    </div>
+
+    <div class="form-group">
+      <label for="register-email">CORREO</label>
+      <input type="email" id="register-email" placeholder="correo@ejemplo.com" required>
+    </div>
+
+    <div class="form-group">
+      <label for="register-password">CONTRASEÑA</label>
+      <input type="password" id="register-password" placeholder="Mín. 6 caracteres" required>
+    </div>
+
+    <button type="submit" class="btn-primary" id="btn-register-submit">REGISTRAR</button>
+  </form>
+  <p class="auth-link">¿Ya tienes cuenta? <span id="go-to-login">Iniciar sesión</span></p>
+</div>

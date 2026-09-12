@@ -1,0 +1,73 @@
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  margin-top: 5px;
+}
+
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 44px;
+  color: var(--cyan-accent);
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  margin-left: 10px;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+
+.points-badge {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-bebas);
+  color: var(--gold-accent);
+  font-size: 18px;
+}
+
+.page-title {
+  font-family: var(--font-bebas);
+  font-size: 34px;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.page-title span {
+  background: var(--cyan-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.league-sub {
+  font-family: var(--font-bebas);
+  font-size: 12px;
+  color: var(--cyan-accent);
+  margin-bottom: 18px;
+}
+
+.section-label {
+  font-family: var(--font-bebas);
+  font-size: 14px;
+  color: var(--gold-accent);
+  margin: 18px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
