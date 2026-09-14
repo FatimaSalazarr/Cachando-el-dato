@@ -96,19 +96,19 @@ function abrirEscenaAR() {
   // Si ya agregamos la lógica antes, no la repetimos
   if (eventosAgregados) return;
 
-  const mapeoEquipos = {
-    0: { key: 'ace', modelo: '#acereroslogomodelo', persistente: true },
-    1: { key: 'alg', modelo: '#algodoneroslogo', persistente: true },
-    2: { key: 'tec', modelo: '#tecos', persistente: false },
-    3: { key: 'cal', modelo: '#calienteslogo', persistente: false },
-    4: { key: 'char', modelo: '#charros', persistente: false },
-    5: { key: 'tor', modelo: '#toroslogo', persistente: false },
-    6: { key: 'riel', modelo: '#rieleros', persistente: false },
-    7: { key: 'sar', modelo: '#saraperos', persistente: false }, 
-    8: { key: 'sul', modelo: '#sultanes', persistente: false },
-    9: { key: 'dor', modelo: '#dorados', persistente: false }
+ const mapeoEquipos = {
+    0: { key: 'ace', modelo: 'modelos/acereroslogomodelo.glb', persistente: true },
+    1: { key: 'alg', modelo: 'modelos/algodoneroslogo.glb', persistente: true },
+    2: { key: 'tec', modelo: 'modelos/tecos.glb', persistente: false },
+    3: { key: 'cal', modelo: 'modelos/calienteslogo.glb', persistente: false },
+    4: { key: 'char', modelo: 'modelos/charros.glb', persistente: false },
+    5: { key: 'tor', modelo: 'modelos/toroslogo.glb', persistente: false },
+    6: { key: 'riel', modelo: 'modelos/rieleros.glb', persistente: false },
+    7: { key: 'sar', modelo: 'modelos/saraperos.glb', persistente: false }, 
+    8: { key: 'sul', modelo: 'modelos/sultanes.glb', persistente: false },
+    9: { key: 'dor', modelo: 'modelos/dorados.glb', persistente: false }
   };
-
+  
   let equipoActual = null;
   const escaparate = document.querySelector('#escaparate-persistente');
   const modeloActivo = document.querySelector('#modelo-activo');
