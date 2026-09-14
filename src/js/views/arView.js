@@ -52,13 +52,6 @@ export function openVRDirectly(teamKey) {
   abrirEscenaAR(); // Solo llamamos a abrir la escena
 }
 
-/*function resizeARScene() {
-  const sceneEl = document.querySelector('a-scene');
-  if (!sceneEl) return;
-
-  requestAnimationFrame(() => sceneEl.resize());
-}*/
-
 export function closeARView() {
   const sceneEl = document.querySelector('a-scene');
   // Detiene la cámara limpiamente en lugar de borrar el HTML
@@ -136,14 +129,18 @@ function abrirEscenaAR() {
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
         }
 
-        if (modeloActivo) modeloActivo.setAttribute('gltf-model', data.modelo);
-        if (escaparate) escaparate.setAttribute('visible', true); // Booleano sin comillas
+        if (modeloActivo) {
+             modeloActivo.setAttribute('gltf-model', data.modelo);
+        }
+        
       });
 
       targetEntity.addEventListener('targetLost', () => {
         if (equipoActual && equipoActual.persistente) return; 
 
-        if (escaparate) escaparate.setAttribute('visible', false); // Booleano sin comillas
+        if (modeloActivo) {
+             modeloActivo.removeAttribute('gltf-model');
+        }
         if (titleEl) titleEl.textContent = 'Buscando marcador...';
         if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
       });
