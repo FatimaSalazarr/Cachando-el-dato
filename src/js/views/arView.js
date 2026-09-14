@@ -32,8 +32,8 @@ export function openScannerView() {
   const modal = document.getElementById('ar-experience-modal');
   if (detectedContent) detectedContent.classList.remove('hidden');
   if (modal) modal.classList.remove('hidden');
-  resizeARScene();
-  abrirEscenaAR();
+  
+  abrirEscenaAR(); // Solo llamamos a abrir la escena
 }
 
 export function openVRDirectly(teamKey) {
@@ -49,16 +49,15 @@ export function openVRDirectly(teamKey) {
   if (summaryEl) summaryEl.textContent = `${team.city} · ${team.stadium}`;
   if (modal) modal.classList.remove('hidden');
 
-  resizeARScene();
-  abrirEscenaAR();
+  abrirEscenaAR(); // Solo llamamos a abrir la escena
 }
 
-function resizeARScene() {
+/*function resizeARScene() {
   const sceneEl = document.querySelector('a-scene');
   if (!sceneEl) return;
 
   requestAnimationFrame(() => sceneEl.resize());
-}
+}*/
 
 export function closeARView() {
   const sceneEl = document.querySelector('a-scene');
