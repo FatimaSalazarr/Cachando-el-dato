@@ -10,10 +10,15 @@
            vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <a-camera position="0 0 0" look-controls="enabled: false">
-      <a-entity id="escaparate-persistente" position="0 -0.25 -3" visible="false">
-        <a-gltf-model id="modelo-activo" rotation="0 0 0" scale="100.0 100.0 100.0" src="" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
-      </a-entity>
-    </a-camera>
+  <a-entity id="escaparate-persistente" position="0 -0.25 -3" visible="false">
+    <!-- Usamos a-entity sin atributo src inicial -->
+    <a-entity id="modelo-activo" 
+              rotation="0 0 0" 
+              scale="0.5 0.5 0.5" 
+              animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+    </a-entity>
+  </a-entity>
+</a-camera>
     
     <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
     <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
