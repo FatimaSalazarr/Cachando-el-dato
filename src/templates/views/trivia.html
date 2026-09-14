@@ -1,0 +1,39 @@
+<h2 class="screen-title">TRIVIA</h2>
+
+<div id="trivia-welcome" class="trivia-card full-card">
+  <div class="baseball-circle">
+    <i class="fa-solid fa-baseball"></i>
+  </div>
+  <h3>TRIVIA DE BÉISBOL</h3>
+  <p>Responde 5 preguntas. Gana 10 puntos por cada respuesta correcta.</p>
+  <p class="current-pts">Puntos actuales: <span class="user-pts-display">80</span></p>
+  <button class="btn-primary" id="btn-start-trivia">COMENZAR</button>
+</div>
+
+<!-- Cuestionario con Estilo Kahoot -->
+<div id="trivia-quiz" class="trivia-card kahoot-quiz-card full-card hidden">
+  <div class="kahoot-top-row">
+    <div id="trivia-timer" class="kahoot-timer-circle">20</div>
+    <div class="kahoot-header-info">
+      <span id="trivia-progress" class="quiz-step">PREGUNTA 1 DE 5</span>
+      <span id="trivia-score" class="quiz-score">0 PTS</span>
+    </div>
+  </div>
+  <h3 id="trivia-question" class="quiz-question">¿Cargando pregunta?</h3>
+  <div id="trivia-options" class="kahoot-options-grid"></div>
+  <button id="trivia-next-btn" class="btn-primary hidden" style="margin-top: 15px;">SIGUIENTE</button>
+</div>
+
+<div id="trivia-result" class="trivia-card full-card hidden">
+  <div class="baseball-circle gold-circle">
+    <i class="fa-solid fa-trophy"></i>
+  </div>
+  <h3>¡TRIVIA TERMINADA!</h3>
+  <div class="score-ratio-box">
+    <span id="trivia-ratio" class="score-ratio">3/5</span>
+    <span class="score-ratio-label">RESPUESTAS CORRECTAS</span>
+  </div>
+  <p id="trivia-final-message">Respondiste correctamente...</p>
+  <p class="current-pts">Total acumulado: <span class="user-pts-display">80</span> pts</p>
+  <button class="btn-primary" id="btn-reset-trivia">VOLVER A JUGAR</button>
+</div>

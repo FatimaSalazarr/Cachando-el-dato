@@ -1,0 +1,22 @@
+<div class="auth-box">
+  <div class="logo-badge">
+    <img src="img/logo1.png" alt="Logo de Cachando el Dato" style="width: 120%; height: 100%; object-fit: contain;">
+  </div>
+  <h1 class="title">LOGIN</h1>
+  <p class="subtitle">CACHANDO EL DATO</p>
+
+  <form id="login-form" onsubmit="event.preventDefault();">
+    <div class="form-group">
+      <label for="login-email">USUARIO</label>
+      <input type="email" id="login-email" placeholder="correo@ejemplo.com" value="correo@ejemplo.com" required>
+    </div>
+
+    <div class="form-group">
+      <label for="login-password">CONTRASEÑA</label>
+      <input type="password" id="login-password" placeholder="••••••••" value="password" required>
+    </div>
+
+    <button type="submit" class="btn-primary" id="btn-login-submit">ENTRAR</button>
+  </form>
+  <p class="auth-link">¿Sin cuenta? <span id="go-to-register">Registro</span></p>
+</div>

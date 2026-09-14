@@ -1,0 +1,38 @@
+<!-- Botón para cerrar (Z-index altísimo para que no se oculte) -->
+<button class="close-camera-btn" id="btn-close-ar" style="z-index: 9999;">
+  <i class="fa-solid fa-xmark"></i>
+</button>
+
+<!-- ESCENA DE MIND-AR -->
+<div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+
+<!-- UI INTERACTIVA SUPERPUESTA CON ENCABEZADO "ESCANEA" Y BOTÓN PARA TOMAR FOTO -->
+<div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">
+  
+
+  <div style="flex: 1;"></div>
+  
+  <div style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-bottom: 20px;">
+    
+    <div class="ar-action-buttons">
+      <button class="cube-btn-green" id="btn-ar-spin">
+        <i class="fa-solid fa-rotate-right"></i><span>GIRAR</span>
+      </button>
+      <button class="cube-btn-green" id="btn-ar-confetti">
+        <i class="fa-solid fa-wand-magic-sparkles"></i><span>CONFETI</span>
+      </button>
+    </div>
+    
+    <div class="ar-reduced-info-card">
+      <h3 id="ar-team-title">Buscando marcador...</h3>
+      <p id="ar-team-summary">Apunta con la cámara al logo de un equipo.</p>
+    </div>
+    
+    <button class="btn-red-ver-mas" id="btn-ar-more-info">VER MÁS DETALLES</button>
+
+    <!-- Botón para tomar foto movido hacia abajo -->
+    <button class="btn-camera-capture" id="btn-camera-capture" title="Tomar foto" style="margin-top: 10px; margin-bottom: 0;">
+      <i class="fa-solid fa-camera"></i>
+    </button>
+  </div>
+</div>

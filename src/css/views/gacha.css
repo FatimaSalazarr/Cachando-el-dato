@@ -1,0 +1,253 @@
+/* GACHA */
+#gacha-screen.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+
+.gacha-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.gacha-svg-bg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.gacha-ui-top {
+  position: relative;
+  z-index: 10;
+  padding: 24px 20px 0 20px;
+  background: linear-gradient(180deg, rgba(11,25,46,0.85) 0%, transparent 100%);
+}
+
+.gacha-ui-bottom {
+  position: relative;
+  z-index: 10;
+  padding: 0 20px 90px 20px;
+  background: linear-gradient(0deg, rgba(11,25,46,0.85) 0%, transparent 100%);
+}
+
+.gacha-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.gacha-header-row h2 {
+  font-family: var(--font-bebas);
+  font-size: 30px;
+  color: var(--text-primary);
+}
+
+.points-badge-style {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-bebas);
+  color: var(--gold-accent);
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.points-badge-style i {
+  color: var(--gold-accent);
+  font-size: 16px;
+}
+
+.animated-clouds {
+  animation: floatClouds 15s linear infinite;
+}
+
+@keyframes floatClouds {
+  0% { transform: translateX(-20px); }
+  50% { transform: translateX(20px); }
+  100% { transform: translateX(-20px); }
+}
+
+.btn-primary-gacha {
+  width: 100%;
+  height: 54px;
+  background: var(--blue-gradient);
+  border: none;
+  border-radius: 16px;
+  color: var(--text-primary);
+  font-family: var(--font-bebas);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.baseball-graphic {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 54px;
+  color: var(--red-accent);
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.bat-graphic {
+  width: 90px;
+  height: 180px;
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform-origin: 50% 90%;
+  transform: translate(-50%, 50%) rotate(-100deg) scale(0);
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.bat-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.bat-swing-hit {
+  animation: batSwingUpward 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.ball-fly-away {
+  animation: flyToBackground 0.85s cubic-bezier(0.1, 0.85, 0.3, 1) forwards;
+}
+
+@keyframes batSwingUpward {
+  0% { opacity: 0; transform: translate(-90%, 60%) rotate(-100deg) scale(0.8); }
+  50% { opacity: 1; transform: translate(-48%, -10%) rotate(-10deg) scale(1.15); }
+  100% { opacity: 0; transform: translate(-15%, -80%) rotate(55deg) scale(0.8); }
+}
+
+@keyframes flyToBackground {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -280px) scale(0.01) rotate(1440deg); opacity: 0; }
+}
+
+/* RECOMPENSA GACHA */
+.reward-card-enhanced {
+  width: min(100%, 520px);
+  background: linear-gradient(135deg, rgba(23, 48, 88, 0.95) 0%, rgba(11, 25, 46, 0.98) 100%);
+  border: 2px solid var(--gold-accent);
+  border-radius: 28px;
+  padding: 30px 24px 24px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), var(--shadow-glow-gold);
+  position: relative;
+  animation: rewardModalPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes rewardModalPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.reward-glow-ring {
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px dashed rgba(251, 191, 36, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+}
+
+.reward-icon-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gold-gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 34px;
+  color: #0b192e;
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+}
+
+.reward-meta-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.rarity-badge-enhanced {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-family: var(--font-bebas);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  background: var(--blue-gradient);
+  color: #fff;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.reward-card-enhanced h2 {
+  font-family: var(--font-bebas);
+  font-size: 34px;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.reward-item-name {
+  font-family: var(--font-bebas);
+  font-size: 20px;
+  color: var(--gold-accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.reward-item-desc {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.btn-gold-enhanced {
+  width: 100%;
+  height: 52px;
+  background: var(--gold-gradient);
+  border: none;
+  border-radius: 14px;
+  color: #0b192e;
+  font-family: var(--font-bebas);
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-gold);
+  transition: transform 0.1s ease;
+}
+
+.btn-gold-enhanced:active {
+  transform: scale(0.97);
+}
