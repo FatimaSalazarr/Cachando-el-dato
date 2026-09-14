@@ -126,7 +126,7 @@ function abrirEscenaAR() {
     const targetEntity = document.querySelector(`#target-${index}`);
     if (targetEntity) {
       
-      targetEntity.addEventListener('targetFound', () => {
+     targetEntity.addEventListener('targetFound', () => {
         const data = mapeoEquipos[index];
         equipoActual = data; 
         const team = teamsData[data.key];
@@ -137,16 +137,14 @@ function abrirEscenaAR() {
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
         }
 
-        if (modeloActivo) {
-          modeloActivo.setAttribute('gltf-model', data.modelo);
-        }
-        if (escaparate) escaparate.setAttribute('visible', 'true');
+        if (modeloActivo) modeloActivo.setAttribute('gltf-model', data.modelo);
+        if (escaparate) escaparate.setAttribute('visible', true); // Booleano sin comillas
       });
-      
+
       targetEntity.addEventListener('targetLost', () => {
         if (equipoActual && equipoActual.persistente) return; 
 
-        if (escaparate) escaparate.setAttribute('visible', 'false');
+        if (escaparate) escaparate.setAttribute('visible', false); // Booleano sin comillas
         if (titleEl) titleEl.textContent = 'Buscando marcador...';
         if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
       });
