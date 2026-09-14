@@ -100,7 +100,7 @@ function abrirEscenaAR() {
     0: { key: 'ace', modelo: 'modelos/acereroslogomodelo.glb', persistente: true },
     1: { key: 'alg', modelo: 'modelos/algodoneroslogo.glb', persistente: true },
     2: { key: 'tec', modelo: 'modelos/tecos.glb', persistente: false },
-    3: { key: 'cal', modelo: 'modelos/calienteslogo.glb', persistente: false },
+    3: { key: 'cal', modelo: 'modelos/calienteslogo2.glb', persistente: false },
     4: { key: 'char', modelo: 'modelos/charros.glb', persistente: false },
     5: { key: 'tor', modelo: 'modelos/toroslogo.glb', persistente: false },
     6: { key: 'riel', modelo: 'modelos/rieleros.glb', persistente: false },
