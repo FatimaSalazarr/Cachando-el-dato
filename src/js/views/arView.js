@@ -1,6 +1,7 @@
 import { teamsData } from '../data/teamsData.js';
 import { state } from '../core/state.js';
 
+
 let isSpinning = false;
 let eventosAgregados = false; 
 
