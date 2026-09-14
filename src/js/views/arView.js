@@ -108,7 +108,7 @@ function abrirEscenaAR() {
     8: { key: 'sul', modelo: 'modelos/sultanes.glb', persistente: false },
     9: { key: 'dor', modelo: 'modelos/dorados.glb', persistente: false }
   };
-  
+
   let equipoActual = null;
   const escaparate = document.querySelector('#escaparate-persistente');
   const modeloActivo = document.querySelector('#modelo-activo');
@@ -128,7 +128,7 @@ function abrirEscenaAR() {
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
         }
 
-        if (modeloActivo) modeloActivo.setAttribute('src', data.modelo);
+        if (modeloActivo) modeloActivo.setAttribute('gltf-model', data.modelo);
         if (escaparate) escaparate.setAttribute('visible', 'true');
       });
       
