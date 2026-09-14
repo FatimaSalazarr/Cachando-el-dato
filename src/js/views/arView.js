@@ -2,6 +2,7 @@ import { teamsData } from '../data/teamsData.js';
 import { state } from '../core/state.js';
 
 let isSpinning = false;
+let eventosAgregados = false; // Evita duplicar lógica al abrir la cámara varias veces
 
 export function initARView(onOpenFullInfoCallback) {
   const btnClose = document.getElementById('btn-close-ar');
@@ -24,7 +25,7 @@ export function initARView(onOpenFullInfoCallback) {
   }
 }
 
-export function takePhoto() {  console.log("Tomando foto..."); }
+export function takePhoto() { console.log("Tomando foto..."); }
 
 export function openScannerView() {
   const detectedContent = document.getElementById('ar-detected-content');
@@ -51,8 +52,12 @@ export function openVRDirectly(teamKey) {
 }
 
 export function closeARView() {
-  const container = document.getElementById('ar-3d-container');
-  if (container) container.innerHTML = '';
+  const sceneEl = document.querySelector('a-scene');
+  // Detiene la cámara limpiamente en lugar de borrar el HTML
+  if (sceneEl && sceneEl.systems["mindar-image-system"]) {
+    sceneEl.systems["mindar-image-system"].stop();
+  }
+  
   document.getElementById('ar-experience-modal')?.classList.add('hidden');
   isSpinning = false;
 }
@@ -71,57 +76,25 @@ export function toggleModelSpin() {
 
 export function triggerConfetti() {
   if (typeof window.confetti === 'function') {
-    window.confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
   }
 }
 
 function abrirEscenaAR() {
-  const container = document.getElementById('ar-3d-container');
-  if (!container) return;
-
   const titleEl = document.getElementById('ar-team-title');
   const summaryEl = document.getElementById('ar-team-summary');
 
   if (titleEl) titleEl.textContent = 'Buscando marcador...';
   if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
 
-  container.innerHTML = `
-    <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <a-asset-item id="acereroslogomodelo" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
-        <a-asset-item id="algodoneroslogo" src="./modelos/algodoneroslogo.glb"></a-asset-item>
-        <a-asset-item id="tecos" src="./modelos/tecos.glb"></a-asset-item>
-        <a-asset-item id="calienteslogo" src="./modelos/calienteslogo.glb"></a-asset-item>
-        <a-asset-item id="charros" src="./modelos/charros.glb"></a-asset-item>
-        <a-asset-item id="toroslogo" src="./modelos/toroslogo.glb"></a-asset-item>
-        <a-asset-item id="rieleros" src="./modelos/rieleros.glb"></a-asset-item>
-        <a-asset-item id="saraperos" src="./modelos/saraperos.glb"></a-asset-item>
-        <a-asset-item id="sultanes" src="./modelos/sultanes.glb"></a-asset-item>
-        <a-asset-item id="dorados" src="./modelos/dorados.glb"></a-asset-item>
-      </a-assets>
+  const sceneEl = document.querySelector('a-scene');
+  // Enciende la cámara
+  if (sceneEl && sceneEl.systems["mindar-image-system"]) {
+    sceneEl.systems["mindar-image-system"].start();
+  }
 
-      <a-camera position="0 0 0" look-controls="enabled: false">
-        <a-entity id="escaparate-persistente" position="0 -0.25 -3" visible="false">
-          <a-gltf-model id="modelo-activo" rotation="0 0 0" scale="30.0 30.0 30.0" src="" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
-        </a-entity>
-      </a-camera>
-      
-      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
-      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
-      <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
-      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
-      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
-      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
-      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
-      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
-      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
-      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
-    </a-scene>
-  `;
+  // Si ya agregamos la lógica antes, no la repetimos
+  if (eventosAgregados) return;
 
   const mapeoEquipos = {
     0: { key: 'ace', modelo: '#acereroslogomodelo', persistente: true },
@@ -137,40 +110,37 @@ function abrirEscenaAR() {
   };
 
   let equipoActual = null;
+  const escaparate = document.querySelector('#escaparate-persistente');
+  const modeloActivo = document.querySelector('#modelo-activo');
 
-  setTimeout(() => {
-    const escaparate = document.querySelector('#escaparate-persistente');
-    const modeloActivo = document.querySelector('#modelo-activo');
-
-    Object.keys(mapeoEquipos).forEach(index => {
-      const targetEntity = document.querySelector(`#target-${index}`);
-      if (targetEntity) {
+  Object.keys(mapeoEquipos).forEach(index => {
+    const targetEntity = document.querySelector(`#target-${index}`);
+    if (targetEntity) {
+      
+      targetEntity.addEventListener('targetFound', () => {
+        const data = mapeoEquipos[index];
+        equipoActual = data; 
+        const team = teamsData[data.key];
         
-        targetEntity.addEventListener('targetFound', () => {
-          const data = mapeoEquipos[index];
-          equipoActual = data; 
-          const team = teamsData[data.key];
-          
-          if (team) {
-            state.setSelectedTeam(data.key);
-            if (titleEl) titleEl.textContent = team.name;
-            if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
-          }
+        if (team) {
+          state.setSelectedTeam(data.key);
+          if (titleEl) titleEl.textContent = team.name;
+          if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
+        }
 
-          if (modeloActivo) modeloActivo.setAttribute('src', data.modelo);
-          if (escaparate) escaparate.setAttribute('visible', 'true');
-        });
-        
-        targetEntity.addEventListener('targetLost', () => {
-          if (equipoActual && equipoActual.persistente) {
-            return; 
-          }
+        if (modeloActivo) modeloActivo.setAttribute('src', data.modelo);
+        if (escaparate) escaparate.setAttribute('visible', 'true');
+      });
+      
+      targetEntity.addEventListener('targetLost', () => {
+        if (equipoActual && equipoActual.persistente) return; 
 
-          if (escaparate) escaparate.setAttribute('visible', 'false');
-          if (titleEl) titleEl.textContent = 'Buscando marcador...';
-          if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
-        });
-      }
-    });
-  }, 1000);
+        if (escaparate) escaparate.setAttribute('visible', 'false');
+        if (titleEl) titleEl.textContent = 'Buscando marcador...';
+        if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
+      });
+    }
+  });
+
+  eventosAgregados = true;
 }

@@ -1,49 +1,51 @@
-<!-- Botón para cerrar (Z-index altísimo para que no se oculte) -->
+<!-- Botón para cerrar -->
 <button class="close-camera-btn" id="btn-close-ar" style="z-index: 9999;">
   <i class="fa-solid fa-xmark"></i>
 </button>
 
-
-<!-- ESCENA DE MIND-AR-->
 <div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
   
-  <a-scene mindar-image="imageTargetSrc: targets/equipos-liga.mind; autoStart: false; uiLoading: no; uiError: no;" 
+  <a-scene embedded mindar-image="imageTargetSrc: targets/equipos-liga.mind; autoStart: false; uiLoading: no; uiScanning: no;" 
            color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
            vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
-    <!-- LA CÁMARA (El truco de la persistencia va aquí) -->
+    <a-assets>
+      <!-- RUTAS CORREGIDAS: Sin el ./ al inicio -->
+      <a-asset-item id="acereroslogomodelo" src="modelos/acereroslogomodelo.glb"></a-asset-item>
+      <a-asset-item id="algodoneroslogo" src="modelos/algodoneroslogo.glb"></a-asset-item>
+      <a-asset-item id="tecos" src="modelos/tecos.glb"></a-asset-item>
+      <a-asset-item id="calienteslogo" src="modelos/calienteslogo.glb"></a-asset-item>
+      <a-asset-item id="charros" src="modelos/charros.glb"></a-asset-item>
+      <a-asset-item id="toroslogo" src="modelos/toroslogo.glb"></a-asset-item>
+      <a-asset-item id="rieleros" src="modelos/rieleros.glb"></a-asset-item>
+      <a-asset-item id="saraperos" src="modelos/saraperos.glb"></a-asset-item>
+      <a-asset-item id="sultanes" src="modelos/sultanes.glb"></a-asset-item>
+      <a-asset-item id="dorados" src="modelos/dorados.glb"></a-asset-item>
+    </a-assets>
+
     <a-camera position="0 0 0" look-controls="enabled: false">
-      <!-- Este es el "Escaparate" pegado a la cámara. Por defecto está oculto (visible="false") -->
-      <!-- position="0 0 -2" significa que el modelo aparecerá 2 metros frente al teléfono -->
-      <a-entity id="escaparate-persistente" position="0 -0.5 -2" visible="false">
-        <a-gltf-model id="modelo-activo" src="" scale="0.5 0.5 0.5" animation="property: rotation; to: 0 360 0; loop: true; dur: 4000"></a-gltf-model>
+      <a-entity id="escaparate-persistente" position="0 -0.25 -3" visible="false">
+        <a-gltf-model id="modelo-activo" rotation="0 0 0" scale="30.0 30.0 30.0" src="" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
       </a-entity>
     </a-camera>
-
-    <!-- LOS DETECTORES (TARGETS) -->
-    <!-- targetIndex corresponde al orden en el que subieron las imágenes al compilador de MindAR -->
-    <a-entity mindar-image-target="targetIndex: 0" id="target-0"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 1" id="target-1"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 2" id="target-2"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 3" id="target-3"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 4" id="target-4"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 5" id="target-5"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 6" id="target-6"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 7" id="target-7"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 8" id="target-8"></a-entity>
-    <a-entity mindar-image-target="targetIndex: 9" id="target-9"></a-entity>
-
-   
+    
+    <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+    <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+    <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
+    <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
+    <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
+    <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
+    <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
+    <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
+    <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
+    <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
   </a-scene>
 
 </div>
 
-<!-- UI INTERACTIVA SUPERPUESTA CON ENCABEZADO "ESCANEA" Y BOTÓN PARA TOMAR FOTO -->
+<!-- UI INTERACTIVA SUPERPUESTA -->
 <div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">
-  
-
   <div style="flex: 1;"></div>
-  
   <div style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-bottom: 20px;">
     
     <div class="ar-action-buttons">
@@ -61,8 +63,6 @@
     </div>
     
     <button class="btn-red-ver-mas" id="btn-ar-more-info">VER MÁS DETALLES</button>
-
-    <!-- Botón para tomar foto movido hacia abajo -->
     <button class="btn-camera-capture" id="btn-camera-capture" title="Tomar foto" style="margin-top: 10px; margin-bottom: 0;">
       <i class="fa-solid fa-camera"></i>
     </button>
