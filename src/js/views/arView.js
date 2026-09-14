@@ -104,7 +104,7 @@ function abrirEscenaAR() {
     4: { key: 'char', modelo: 'modelos/charros.glb', persistente: false },
     5: { key: 'tor', modelo: 'modelos/toroslogo.glb', persistente: false },
     6: { key: 'riel', modelo: 'modelos/rieleros.glb', persistente: false },
-    7: { key: 'sar', modelo: 'modelos/saraperos.glb', persistente: false }, 
+    7: { key: 'soc', modelo: 'modelos/saraperos.glb', persistente: false }, 
     8: { key: 'sul', modelo: 'modelos/sultanes.glb', persistente: false },
     9: { key: 'dor', modelo: 'modelos/dorados.glb', persistente: false }
   };
@@ -129,7 +129,7 @@ function abrirEscenaAR() {
         }
 
         if (modeloActivo) {
-          modeloActivo.setAttribute('gltf-model', `url(${data.modelo})`);
+          modeloActivo.setAttribute('gltf-model', data.modelo);
         }
         if (escaparate) escaparate.setAttribute('visible', 'true');
       });
