@@ -26,7 +26,7 @@
 #register-screen {
   position: relative;
   background-color: #071526;
-  background-image: url("../../img/FGP_ATELIER_-_DIABLOS_-_18.png");
+  /*background-image: url("../../img/FGP_ATELIER_-_DIABLOS_-_18.png");*/
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
