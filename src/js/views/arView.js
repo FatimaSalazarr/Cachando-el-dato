@@ -32,6 +32,7 @@ export function openScannerView() {
   const modal = document.getElementById('ar-experience-modal');
   if (detectedContent) detectedContent.classList.remove('hidden');
   if (modal) modal.classList.remove('hidden');
+  resizeARScene();
   abrirEscenaAR();
 }
 
@@ -48,7 +49,15 @@ export function openVRDirectly(teamKey) {
   if (summaryEl) summaryEl.textContent = `${team.city} · ${team.stadium}`;
   if (modal) modal.classList.remove('hidden');
 
+  resizeARScene();
   abrirEscenaAR();
+}
+
+function resizeARScene() {
+  const sceneEl = document.querySelector('a-scene');
+  if (!sceneEl) return;
+
+  requestAnimationFrame(() => sceneEl.resize());
 }
 
 export function closeARView() {
@@ -100,7 +109,7 @@ function abrirEscenaAR() {
     0: { key: 'ace', modelo: 'modelos/acereroslogomodelo.glb', persistente: true },
     1: { key: 'alg', modelo: 'modelos/algodoneroslogo.glb', persistente: true },
     2: { key: 'tec', modelo: 'modelos/tecos.glb', persistente: false },
-    3: { key: 'cal', modelo: 'modelos/calienteslogo2.glb', persistente: false },
+    3: { key: 'cal', modelo: 'modelos/calienteslogo.glb', persistente: false },
     4: { key: 'char', modelo: 'modelos/charros.glb', persistente: false },
     5: { key: 'tor', modelo: 'modelos/toroslogo.glb', persistente: false },
     6: { key: 'riel', modelo: 'modelos/rieleros.glb', persistente: false },
