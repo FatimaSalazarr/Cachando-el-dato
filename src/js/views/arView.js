@@ -2,7 +2,7 @@ import { teamsData } from '../data/teamsData.js';
 import { state } from '../core/state.js';
 
 let isSpinning = false;
-let eventosAgregados = false; // Evita duplicar lógica al abrir la cámara varias veces
+let eventosAgregados = false; 
 
 export function initARView(onOpenFullInfoCallback) {
   const btnClose = document.getElementById('btn-close-ar');
@@ -33,7 +33,7 @@ export function openScannerView() {
   if (detectedContent) detectedContent.classList.remove('hidden');
   if (modal) modal.classList.remove('hidden');
   
-  abrirEscenaAR(); // Solo llamamos a abrir la escena
+  abrirEscenaAR(); 
 }
 
 export function openVRDirectly(teamKey) {
@@ -49,12 +49,11 @@ export function openVRDirectly(teamKey) {
   if (summaryEl) summaryEl.textContent = `${team.city} · ${team.stadium}`;
   if (modal) modal.classList.remove('hidden');
 
-  abrirEscenaAR(); // Solo llamamos a abrir la escena
+  abrirEscenaAR();
 }
 
 export function closeARView() {
   const sceneEl = document.querySelector('a-scene');
-  // Detiene la cámara limpiamente en lugar de borrar el HTML
   if (sceneEl && sceneEl.systems["mindar-image-system"]) {
     sceneEl.systems["mindar-image-system"].stop();
   }
@@ -65,14 +64,14 @@ export function closeARView() {
 
 export function toggleModelSpin() {
   isSpinning = !isSpinning;
-  const modeloActivo = document.querySelector('#modelo-activo');
-  if (modeloActivo) {
+  const models = document.querySelectorAll('a-gltf-model');
+  models.forEach(model => {
     if (isSpinning) {
-      modeloActivo.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
+      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
     } else {
-      modeloActivo.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true');
+      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true');
     }
-  }
+  });
 }
 
 export function triggerConfetti() {
@@ -89,58 +88,34 @@ function abrirEscenaAR() {
   if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
 
   const sceneEl = document.querySelector('a-scene');
-  // Enciende la cámara
   if (sceneEl && sceneEl.systems["mindar-image-system"]) {
     sceneEl.systems["mindar-image-system"].start();
   }
 
-  // Si ya agregamos la lógica antes, no la repetimos
   if (eventosAgregados) return;
 
- const mapeoEquipos = {
-    0: { key: 'ace', modelo: 'modelos/acereroslogomodelo.glb', persistente: true },
-    1: { key: 'alg', modelo: 'modelos/algodoneroslogo.glb', persistente: true },
-    2: { key: 'tec', modelo: 'modelos/tecos.glb', persistente: false },
-    3: { key: 'cal', modelo: 'modelos/calienteslogo.glb', persistente: false },
-    4: { key: 'char', modelo: 'modelos/charros.glb', persistente: false },
-    5: { key: 'tor', modelo: 'modelos/toroslogo.glb', persistente: false },
-    6: { key: 'riel', modelo: 'modelos/rieleros.glb', persistente: false },
-    7: { key: 'soc', modelo: 'modelos/saraperos.glb', persistente: false }, 
-    8: { key: 'sul', modelo: 'modelos/sultanes.glb', persistente: false },
-    9: { key: 'dor', modelo: 'modelos/dorados.glb', persistente: false }
+  // Solo usamos JavaScript para actualizar los textos, A-Frame dibuja los modelos
+  const mapeoEquipos = {
+    0: 'ace', 1: 'alg', 2: 'tec', 3: 'cal', 4: 'char',
+    5: 'tor', 6: 'riel', 7: 'soc', 8: 'sul', 9: 'dor'
   };
-
-  let equipoActual = null;
-  const escaparate = document.querySelector('#escaparate-persistente');
-  const modeloActivo = document.querySelector('#modelo-activo');
 
   Object.keys(mapeoEquipos).forEach(index => {
     const targetEntity = document.querySelector(`#target-${index}`);
     if (targetEntity) {
       
      targetEntity.addEventListener('targetFound', () => {
-        const data = mapeoEquipos[index];
-        equipoActual = data; 
-        const team = teamsData[data.key];
+        const teamKey = mapeoEquipos[index];
+        const team = teamsData[teamKey];
         
         if (team) {
-          state.setSelectedTeam(data.key);
+          state.setSelectedTeam(teamKey);
           if (titleEl) titleEl.textContent = team.name;
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
         }
-
-        if (modeloActivo) {
-             modeloActivo.setAttribute('gltf-model', data.modelo);
-        }
-        
       });
 
       targetEntity.addEventListener('targetLost', () => {
-        if (equipoActual && equipoActual.persistente) return; 
-
-        if (modeloActivo) {
-             modeloActivo.removeAttribute('gltf-model');
-        }
         if (titleEl) titleEl.textContent = 'Buscando marcador...';
         if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
       });

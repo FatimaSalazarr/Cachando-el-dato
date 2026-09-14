@@ -9,28 +9,65 @@
            color-space="sRGB" renderer="colorManagement: true" 
            vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
-    <a-camera position="0 0 0" look-controls="enabled: false">
-      <a-entity id="escaparate-persistente" position="0 -0.25 -3">
-        <a-light type="ambient" color="#ffffff" intensity="1.5"></a-light>
-        <!-- Retiramos la caja de diagnóstico roja y dejamos solo el modelo -->
-        <a-entity id="modelo-activo" 
-                  rotation="0 0 0" 
-                  scale="5 5 5"
-                  animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
-        </a-entity>
-      </a-entity>
-    </a-camera>
+    <!-- PRECARGA DE MODELOS (Evita errores 404 y bloqueos de JSON) -->
+    <a-assets>
+      <a-asset-item id="acereros" src="modelos/acereroslogomodelo.glb"></a-asset-item>
+      <a-asset-item id="algodoneros" src="modelos/algodoneroslogo.glb"></a-asset-item>
+      <a-asset-item id="tecos" src="modelos/tecos.glb"></a-asset-item>
+      <a-asset-item id="calientes" src="modelos/calienteslogo.glb"></a-asset-item>
+      <a-asset-item id="charros" src="modelos/charros.glb"></a-asset-item>
+      <a-asset-item id="toros" src="modelos/toroslogo.glb"></a-asset-item>
+      <a-asset-item id="rieleros" src="modelos/rieleros.glb"></a-asset-item>
+      <a-asset-item id="saraperos" src="modelos/saraperos.glb"></a-asset-item>
+      <a-asset-item id="sultanes" src="modelos/sultanes.glb"></a-asset-item>
+      <a-asset-item id="dorados" src="modelos/dorados.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
     
-    <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
-    <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
-    <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
-    <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
-    <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
-    <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
-    <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
-    <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
-    <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
-    <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
+    <!-- LOS MODELOS VUELVEN A ESTAR ADENTRO DE SU DETECTOR -->
+    <!-- Mantenemos la escala en 5 y la luz ambiental básica -->
+    <a-light type="ambient" color="#ffffff" intensity="1.5"></a-light>
+
+    <a-entity id="target-0" mindar-image-target="targetIndex: 0">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#acereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+    
+    <a-entity id="target-1" mindar-image-target="targetIndex: 1">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#algodoneros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+    
+    <a-entity id="target-2" mindar-image-target="targetIndex: 2">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#tecos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-3" mindar-image-target="targetIndex: 3">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#calientes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-4" mindar-image-target="targetIndex: 4">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#charros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-5" mindar-image-target="targetIndex: 5">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#toros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-6" mindar-image-target="targetIndex: 6">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#rieleros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-7" mindar-image-target="targetIndex: 7">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#saraperos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-8" mindar-image-target="targetIndex: 8">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#sultanes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-9" mindar-image-target="targetIndex: 9">
+      <a-gltf-model rotation="0 0 0" position="0 0 0" scale="5 5 5" src="#dorados" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
   </a-scene>
 
 </div>
