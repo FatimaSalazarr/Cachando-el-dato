@@ -3,8 +3,40 @@
   <i class="fa-solid fa-xmark"></i>
 </button>
 
-<!-- ESCENA DE MIND-AR -->
-<div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+
+<!-- ESCENA DE MIND-AR-->
+<div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+  
+  <a-scene mindar-image="imageTargetSrc: targets/equipos-liga.mind; autoStart: false; uiLoading: no; uiError: no;" 
+           color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+           vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    
+    <!-- LA CÁMARA (El truco de la persistencia va aquí) -->
+    <a-camera position="0 0 0" look-controls="enabled: false">
+      <!-- Este es el "Escaparate" pegado a la cámara. Por defecto está oculto (visible="false") -->
+      <!-- position="0 0 -2" significa que el modelo aparecerá 2 metros frente al teléfono -->
+      <a-entity id="escaparate-persistente" position="0 -0.5 -2" visible="false">
+        <a-gltf-model id="modelo-activo" src="" scale="0.5 0.5 0.5" animation="property: rotation; to: 0 360 0; loop: true; dur: 4000"></a-gltf-model>
+      </a-entity>
+    </a-camera>
+
+    <!-- LOS DETECTORES (TARGETS) -->
+    <!-- targetIndex corresponde al orden en el que subieron las imágenes al compilador de MindAR -->
+    <a-entity mindar-image-target="targetIndex: 0" id="target-0"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 1" id="target-1"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 2" id="target-2"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 3" id="target-3"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 4" id="target-4"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 5" id="target-5"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 6" id="target-6"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 7" id="target-7"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 8" id="target-8"></a-entity>
+    <a-entity mindar-image-target="targetIndex: 9" id="target-9"></a-entity>
+
+   
+  </a-scene>
+
+</div>
 
 <!-- UI INTERACTIVA SUPERPUESTA CON ENCABEZADO "ESCANEA" Y BOTÓN PARA TOMAR FOTO -->
 <div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">

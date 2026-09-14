@@ -24,11 +24,7 @@ export function initARView(onOpenFullInfoCallback) {
   }
 }
 
-export function takePhoto() {
-  // Se eliminó triggerConfetti(); para que no lance confeti al tomar foto
-  console.log("Tomando foto..."); 
-  // Aquí puedes agregar la lógica real para capturar la pantalla más adelante
-}
+export function takePhoto() {  console.log("Tomando foto..."); }
 
 export function openScannerView() {
   const detectedContent = document.getElementById('ar-detected-content');
@@ -63,14 +59,14 @@ export function closeARView() {
 
 export function toggleModelSpin() {
   isSpinning = !isSpinning;
-  const models = document.querySelectorAll('a-gltf-model');
-  models.forEach(model => {
+  const modeloActivo = document.querySelector('#modelo-activo');
+  if (modeloActivo) {
     if (isSpinning) {
-      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
+      modeloActivo.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
     } else {
-      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true');
+      modeloActivo.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true');
     }
-  });
+  }
 }
 
 export function triggerConfetti() {
@@ -96,45 +92,88 @@ function abrirEscenaAR() {
   container.innerHTML = `
     <a-scene embedded mindar-image="imageTargetSrc: ./targets/equipos-liga.mind; uiLoading: no; uiScanning: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <a-asset-item id="modeloAcereros" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
+        <!-- El id="" debe ser igual a lo que pusiste en mapeoEquipos (sin el #) -->
+        <!-- El src="" debe ser exactamente igual al nombre de tu archivo .glb -->
+        <a-asset-item id="acereroslogomodelo" src="./modelos/acereroslogomodelo.glb"></a-asset-item>
+        <a-asset-item id="algodoneroslogo" src="./modelos/algodoneroslogo.glb"></a-asset-item>
+        <a-asset-item id="tecos" src="./modelos/tecos.glb"></a-asset-item>
+        <a-asset-item id="calienteslogo" src="./modelos/calienteslogo.glb"></a-asset-item>
+        <a-asset-item id="charros" src="./modelos/charros.glb"></a-asset-item>
+        <a-asset-item id="toroslogo" src="./modelos/toroslogo.glb"></a-asset-item>
+        <a-asset-item id="rieleros" src="./modelos/rieleros.glb"></a-asset-item>
+        
+        <a-asset-item id="saraperos" src="./modelos/saraperos.glb"></a-asset-item>
+        
+        <a-asset-item id="sultanes" src="./modelos/sultanes.glb"></a-asset-item>
+        <a-asset-item id="dorados" src="./modelos/dorados.glb"></a-asset-item>
       </a-assets>
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      
-      <!-- Marcador 0: Acereros -->
-      <a-entity id="target-0" mindar-image-target="targetIndex: 0">
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
-      </a-entity>
 
-      <!-- Marcador 1: Algodoneros -->
-      <a-entity id="target-1" mindar-image-target="targetIndex: 1">
-        <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="30.0 30.0 30.0" src="#modeloAcereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
-      </a-entity>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-entity id="escaparate-persistente" position="0 -0.25 -3" visible="false">
+          <a-gltf-model id="modelo-activo" rotation="0 0 0" scale="30.0 30.0 30.0" src="" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+        </a-entity>
+      </a-camera>
+      
+      <!-- Detectores -->
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
     </a-scene>
   `;
 
+   // Mapeo conectando el índice del .mind, la llave del equipo y el ID del modelo 3D
   const mapeoEquipos = {
-    0: 'ace',
-    1: 'alg'
+    0: { key: 'ace', modelo: '#acereroslogomodelo' },
+    1: { key: 'alg', modelo: '#algodoneroslogo' }, // Cambiar a '#modeloAlgodoneros' cuando lo tengas
+    2: { key: 'tec', modelo: '#tecos' },
+    3: { key: 'cal', modelo: '#calienteslogo' },
+    4: { key: 'char', modelo: '#charros' },
+    5: { key: 'tor', modelo: '#toroslogo' },
+    6: { key: 'riel', modelo: '#rieleros' },
+    7: { key: 'sar', modelo: '#saraperos' }, 
+    8: { key: 'sul', modelo: '#sultanes' },
+    9: { key: 'dor', modelo: '#dorados' }
   };
 
+  // Variable para recordar qué equipo está actualmente en pantalla
+  let equipoActual = null;
+
   setTimeout(() => {
+    const escaparate = document.querySelector('#escaparate-persistente');
+    const modeloActivo = document.querySelector('#modelo-activo');
+
     Object.keys(mapeoEquipos).forEach(index => {
       const targetEntity = document.querySelector(`#target-${index}`);
       if (targetEntity) {
+        
+        // CUANDO DETECTA LA IMAGEN
         targetEntity.addEventListener('targetFound', () => {
-          const teamKey = mapeoEquipos[index];
-          const team = teamsData[teamKey];
+          const data = mapeoEquipos[index];
+          equipoActual = data; // Guardamos en memoria el equipo actual
+          const team = teamsData[data.key];
+          
           if (team) {
-            state.setSelectedTeam(teamKey);
+            state.setSelectedTeam(data.key);
             if (titleEl) titleEl.textContent = team.name;
-            if (summaryEl) summaryEl.textContent = `${team.city} · ${team.stadium}`;
+            if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
           }
+
+          if (modeloActivo) modeloActivo.setAttribute('src', data.modelo);
+          if (escaparate) escaparate.setAttribute('visible', 'true');
+        });
+        
+        // CUANDO PIERDE LA IMAGEN
+        targetEntity.addEventListener('targetLost', () => {
+          // Si el equipo escaneado es persistente, interrumpimos la función y no ocultamos nada
+          if (equipoActual && equipoActual.persistente) {
+            return; 
+          }
+
+          // Si NO es persistente, ocultamos el modelo y reiniciamos la UI
+          if (escaparate) escaparate.setAttribute('visible', 'false');
+          if (titleEl) titleEl.textContent = 'Buscando marcador...';
+          if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
         });
 
-        targetEntity.addEventListener('targetLost', () => {
-          if (titleEl) titleEl.textContent = 'Buscando marcador...';
-          if (summaryEl) summaryEl.textContent = 'Mantén el logo dentro del encuadre.';
-        });
       }
     });
   }, 1000);
