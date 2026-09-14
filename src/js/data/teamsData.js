@@ -14,12 +14,12 @@ export const teamsData = {
       {
         name: 'Jesse Castillo',
         role: 'Infielder',
-        img: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Equipo tradicional con una afición muy entregada en el estado de Sinaloa.'
   },
@@ -39,12 +39,12 @@ export const teamsData = {
       {
         name: 'Ademar Rifaela',
         role: 'Jardinero',
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Franquicia vibrante que aporta gran energía y pasión al circuito norteño.'
   },
@@ -64,12 +64,12 @@ export const teamsData = {
       {
         name: 'Japhet Amador',
         role: 'Bateador Designado',
-        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Equipo con gran tradición histórica en el occidente de México.'
   },
@@ -89,12 +89,12 @@ export const teamsData = {
       {
         name: 'Sebastián Elizalde',
         role: 'Jardinero',
-        img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Representantes con arraigo e historia profunda en el estado grande.'
   },
@@ -114,12 +114,12 @@ export const teamsData = {
       {
         name: 'Chris Carter',
         role: 'Bateador de Poder',
-        img: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Una de las ofensivas más poderosas de la zona norte del país.'
   },
@@ -139,12 +139,12 @@ export const teamsData = {
       {
         name: 'Leonardo Reginatto',
         role: 'Infielder',
-        img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Equipo tradicional con memorables batallas en el diamante nacional.'
   },
@@ -164,12 +164,12 @@ export const teamsData = {
       {
         name: 'Kennys Vargas',
         role: 'Primera Base',
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Franquicia binacional con una larga y respetada trayectoria histórica.'
   },
@@ -189,12 +189,12 @@ export const teamsData = {
       {
         name: 'Nick Williams',
         role: 'Jardinero',
-        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Organización moderna y protagonista constante en los campeonatos.'
   },
@@ -214,12 +214,12 @@ export const teamsData = {
       {
         name: 'Rainel Rosario',
         role: 'Jardinero',
-        img: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'Tradición y orgullo del estado de Coahuila con una afición muy fiel.'
   },
@@ -239,12 +239,12 @@ export const teamsData = {
       {
         name: 'Ramiro Peña',
         role: 'Infielder',
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+        img: ''
       }
     ],
-    image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     gallery: [
-      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80'
+      ''
     ],
     desc: 'El equipo histórico de Monterrey, pilar fundamental de la pelota profesional.'
   }
