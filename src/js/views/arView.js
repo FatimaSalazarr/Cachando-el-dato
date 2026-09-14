@@ -128,7 +128,9 @@ function abrirEscenaAR() {
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
         }
 
-        if (modeloActivo) modeloActivo.setAttribute('gltf-model', data.modelo);
+        if (modeloActivo) {
+          modeloActivo.setAttribute('gltf-model', `url(${data.modelo})`);
+        }
         if (escaparate) escaparate.setAttribute('visible', 'true');
       });
       
