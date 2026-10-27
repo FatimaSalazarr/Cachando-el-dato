@@ -11,23 +11,24 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 10px;
+  margin: 0;
+  overflow-x: hidden;
 }
 
-/* CONTENEDOR ADAPTABLE / RESPONSIVO */
+/* CONTENEDOR GENERAL ADAPTABLE (Ocupa toda la pantalla de forma nativa en celulares y web) */
 .mobile-frame {
-  width: 100%; 
-  max-width: 412px; 
-  height: 820px;
-  max-height: 95vh;
+  width: 100vw; 
+  max-width: 100vw; 
+  height: 100vh;
+  max-height: 100vh;
   background-color: var(--bg-deep);
   background-image: 
     radial-gradient(circle at 15% 15%, rgba(0, 210, 255, 0.22) 0%, transparent 45%),
     radial-gradient(circle at 85% 85%, rgba(255, 59, 92, 0.18) 0%, transparent 45%);
-  border-radius: 40px;
+  border-radius: 0;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(56, 189, 248, 0.25);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
 }
@@ -46,9 +47,10 @@ body {
 .tab-screen.active {
   display: flex;
   flex-direction: column;
-  padding: 20px 20px 130px 20px;
+  padding: 20px 20px 110px 20px; /* Espacio inferior reservado para la barra de navegación */
   overflow-y: auto;
   scrollbar-width: none;
+  height: 100%;
 }
 
 .tab-screen.active::-webkit-scrollbar {
@@ -68,34 +70,26 @@ body {
   overflow: hidden;
 }
 
-@media (min-width: 768px) {
-  body {
-    padding: 15px;
-  }
-  .mobile-frame {
-    max-width: 720px;
-    height: 85vh;
-    border-radius: 32px;
-  }
-}
-
+/* DISEÑO OPTIMIZADO PARA COMPUTADORAS Y TABLETS (PC) */
 @media (min-width: 1024px) {
   body {
     padding: 0;
-    align-items: stretch;
+    align-items: center;
+    background: radial-gradient(circle at center, #1e3a8a 0%, #0b192e 100%);
   }
+  
   .mobile-frame {
-    max-width: 100% !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 480px !important; /* Mantiene la proporción ideal de app móvil en pantallas grandes */
     height: 100vh !important;
     max-height: 100vh !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+    border-radius: 0px !important;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.7) !important;
+    border-left: 1px solid rgba(56, 189, 248, 0.2);
+    border-right: 1px solid rgba(56, 189, 248, 0.2);
   }
+  
   .tab-screen.active {
-    max-width: 1150px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 30px 30px 120px 30px;
+    padding: 25px 25px 115px 25px;
   }
 }
