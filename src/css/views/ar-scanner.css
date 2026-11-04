@@ -21,6 +21,25 @@
   z-index: 1;
 }
 
+/* Botón de Ayuda (Esquina superior izquierda) */
+.help-camera-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(11,25,46,0.75);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .close-camera-btn {
   position: absolute;
   top: 20px;
@@ -81,7 +100,6 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-  /* Se resetea el margin-bottom para que asiente bien en la base */
   margin-bottom: 0px; 
   transition: transform 0.1s ease, background-color 0.2s;
 }
@@ -177,4 +195,120 @@
   font-size: 22px;
   cursor: pointer;
   box-shadow: var(--shadow-glow-cyan);
+}
+
+/* Estilos del Modal de Ayuda AR */
+.ar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 12, 24, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.ar-modal-content {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(17, 34, 61, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ar-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  background: rgba(11, 25, 46, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ar-modal-header h3 {
+  font-family: var(--font-bebas, sans-serif);
+  font-size: 22px;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ar-modal-header h3 i {
+  color: #38bdf8;
+}
+
+.ar-modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.ar-modal-body {
+  padding: 20px;
+  color: #cbd5e1;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.ar-modal-body p {
+  margin-bottom: 15px;
+}
+
+.ar-modal-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ar-modal-body li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.ar-modal-body li i {
+  font-size: 16px;
+  color: #38bdf8;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.ar-modal-footer {
+  padding: 15px 20px;
+  background: rgba(11, 25, 46, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: center;
+}
+
+.btn-modal-entendido {
+  width: 100%;
+  height: 45px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: var(--font-bebas, sans-serif);
+  font-size: 18px;
+  cursor: pointer;
 }
