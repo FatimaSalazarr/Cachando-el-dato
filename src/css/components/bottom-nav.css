@@ -79,3 +79,14 @@
 .center-btn:active {
   transform: scale(0.92);
 }
+
+/* Asegurar que la barra de navegación inferior siempre esté anclada y visible */
+.bottom-nav, nav.nav-bar, .app-navigation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(11, 25, 46, 0.95);
+  backdrop-filter: blur(10px);
+}
