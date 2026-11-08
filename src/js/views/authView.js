@@ -24,13 +24,40 @@ export function initAuthView(navigateToAppCallback) {
     navigateToAppCallback('home-screen');
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     if (e) e.preventDefault();
-    const name = document.getElementById('register-name')?.value || 'Usuario';
-    const email = document.getElementById('register-email')?.value || 'usuario@ejemplo.com';
-    state.currentUser.name = name;
-    state.currentUser.email = email;
-    navigateToAppCallback('home-screen');
+    
+    const name = document.getElementById('register-name')?.value;
+    const email = document.getElementById('register-email')?.value;
+    const password = document.getElementById('register-password')?.value;
+
+    if (!name || !email || !password) {
+      alert('Por favor, llena todos los campos.');
+      return;
+    }
+
+    try {
+      const respuesta = await fetch('http://localhost:3000/api/auth/registro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: name, email, password })
+      });
+
+      const datos = await respuesta.json();
+
+      if (respuesta.ok) {
+        alert('Registro exitoso. Ahora puedes iniciar sesión.');
+        if (registerForm) registerForm.reset();
+        switchAuthScreen('login-screen');
+      } else {
+        alert(`Error en el registro: ${datos.error}`);
+      }
+    } catch (error) {
+      console.error('Error de red o servidor:', error);
+      alert('Error al conectar con el servidor.');
+    }
   };
 
   if (loginForm) {
