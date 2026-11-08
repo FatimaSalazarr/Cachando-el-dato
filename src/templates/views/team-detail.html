@@ -11,13 +11,19 @@
   <h2 id="detail-team-name">Algodoneros de Guasave</h2>
 </div>
 
-<div class="modal-banner">
+<!-- Banner Multimedia -->
+<div class="modal-banner" id="media-banner-container">
   <img id="detail-team-img" src="" alt="Estadio" onerror="this.src='';">
-  <div class="banner-overlay">
+  <div class="banner-overlay" style="pointer-events: none;">
     <span id="detail-team-tag" class="team-tag banner-tag">ALG</span>
     <span class="banner-caption"><i class="fa-solid fa-camera"></i> VISTA EN VIVO</span>
   </div>
 </div>
+
+<!-- Botón Efectos y Filtros -->
+<button class="btn-effects-trigger" id="btn-open-effects">
+  <i class="fa-solid fa-wand-magic-sparkles"></i> EFECTOS Y FILTROS
+</button>
 
 <div class="gallery-section">
   <p class="modal-subheading"><i class="fa-solid fa-images"></i> GALERÍA DEL ESTADIO</p>
@@ -73,3 +79,46 @@
 <button class="btn-bottom-trivia" id="btn-detail-to-trivia">
   <i class="fa-solid fa-circle-question"></i> IR A TRIVIA
 </button>
+
+<!-- MODAL DE EFECTOS, FILTROS Y NAVEGACIÓN -->
+<div class="media-fullscreen-modal" id="media-fullscreen-modal" style="display: none;">
+  <div class="mfm-content">
+    <button class="mfm-close" id="mfm-close-btn"><i class="fa-solid fa-xmark"></i></button>
+    
+    <div class="mfm-media-wrapper-nav">
+      <button class="mfm-nav-arrow" id="mfm-prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="mfm-media-container" id="mfm-media-container">
+        <!-- Contenido multimedia dinámico -->
+      </div>
+      <button class="mfm-nav-arrow" id="mfm-next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Círculos de Filtros -->
+    <div class="mfm-filters-bar">
+      <button class="mfm-filter-circle active" data-filter="none" title="Normal">Normal</button>
+      <button class="mfm-filter-circle" data-filter="blur" title="Desenfoque">Blur</button>
+      <button class="mfm-filter-circle" data-filter="sparkles" title="Brillitos">Brillos</button>
+      <button class="mfm-filter-circle" data-filter="thermal" title="Cámara Térmica">Térmica</button>
+      <button class="mfm-filter-circle" data-filter="saturate" title="Alta Saturación">Saturada</button>
+    </div>
+
+    <!-- Botón guardar -->
+    <button class="mfm-save-btn" id="mfm-save-btn">
+      <i class="fa-solid fa-floppy-disk"></i> GUARDAR ARCHIVO
+    </button>
+  </div>
+</div>
+
+<!-- MODAL DE ÉXITO AL GUARDAR -->
+<div class="media-fullscreen-modal" id="success-alert-modal" style="display: none; z-index: 25000;">
+  <div class="mfm-content" style="max-width: 360px; text-align: center; padding: 30px 20px;">
+    <div class="success-icon-badge">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h3 style="font-family: var(--font-bebas); font-size: 24px; color: var(--text-primary); margin-top: 10px;">¡GUARDADO CON ÉXITO!</h3>
+    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;">El archivo multimedia con el filtro aplicado se ha guardado correctamente.</p>
+    <button class="mfm-save-btn" id="success-modal-ok-btn" style="height: 44px; font-size: 16px;">
+      ACEPTAR
+    </button>
+  </div>
+</div>

@@ -5,17 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cachando el Dato - AR & LMN</title>
   
+  <!-- Favicon / Logo de la pestaña -->
+  <link rel="icon" type="image/png" href="/img/logo1.png">
+  
   <!-- Tipografías e Iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Estilos Modulares -->
-  <link rel="stylesheet" href="src/css/main.css">
+  <!-- Estilos Modulares (Cargamos styles.css para que tome los fondos y reglas globales) -->
+  <link rel="stylesheet" href="styles.css">
   
   <!-- Librerías Externas -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <!-- REGLAS DE ESCRITORIO: ROMPE EL CUADRO Y OCUPA TODA LA PANTALLA -->
+  <style>
+    @media (min-width: 1024px) {
+      body {
+        display: block !important; /* Desactiva el flex centrador del body en PC */
+        padding: 0 !important;
+        background: #0b192e !important;
+        overflow-x: hidden;
+      }
+      
+      .mobile-frame {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow-y: auto !important;
+      }
+
+      .app-content {
+        height: 100% !important;
+        overflow-y: auto !important;
+      }
+
+      .tab-screen.active {
+        max-width: 1350px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        padding: 40px 40px 140px 40px !important;
+        height: auto !important;
+        min-height: 100%;
+      }
+
+      .bottom-tab-bar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 100% !important;
+        max-width: 800px !important;
+        border-radius: 20px 20px 0 0 !important;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
