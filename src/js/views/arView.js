@@ -10,6 +10,12 @@ export function initARView(onOpenFullInfoCallback) {
   const btnCapture = document.getElementById('btn-camera-capture');
   const btnMoreInfo = document.getElementById('btn-ar-more-info');
 
+  // Referencias para el modal de ayuda nuevo
+  const btnHelp = document.getElementById('btn-ar-help');
+  const arHelpModal = document.getElementById('ar-help-modal');
+  const btnCloseArModal = document.getElementById('btn-close-ar-modal');
+  const btnArGotIt = document.getElementById('btn-ar-got-it');
+
   if (btnClose) btnClose.onclick = () => closeARView();
   if (btnSpin) btnSpin.onclick = () => toggleModelSpin();
   if (btnConfetti) btnConfetti.onclick = () => triggerConfetti();
@@ -19,6 +25,30 @@ export function initARView(onOpenFullInfoCallback) {
       closeARView();
       if (onOpenFullInfoCallback) {
         onOpenFullInfoCallback(state.currentSelectedTeamKey);
+      }
+    };
+  }
+
+  // Eventos del Modal de Ayuda agregado
+  if (btnHelp && arHelpModal) {
+    btnHelp.onclick = () => {
+      arHelpModal.style.display = 'flex';
+    };
+  }
+  if (btnCloseArModal && arHelpModal) {
+    btnCloseArModal.onclick = () => {
+      arHelpModal.style.display = 'none';
+    };
+  }
+  if (btnArGotIt && arHelpModal) {
+    btnArGotIt.onclick = () => {
+      arHelpModal.style.display = 'none';
+    };
+  }
+  if (arHelpModal) {
+    arHelpModal.onclick = (e) => {
+      if (e.target === arHelpModal) {
+        arHelpModal.style.display = 'none';
       }
     };
   }
@@ -58,6 +88,11 @@ export function closeARView() {
   const container = document.getElementById('ar-3d-container');
   if (container) container.innerHTML = '';
   document.getElementById('ar-experience-modal')?.classList.add('hidden');
+  
+  // Ocultar también el modal de ayuda si estuviera abierto
+  const arHelpModal = document.getElementById('ar-help-modal');
+  if (arHelpModal) arHelpModal.style.display = 'none';
+
   isSpinning = false;
 }
 

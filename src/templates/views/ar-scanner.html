@@ -1,3 +1,8 @@
+<!-- Botón de Ayuda (Esquina superior izquierda) -->
+<button class="help-camera-btn" id="btn-ar-help" style="z-index: 9999;" title="Ayuda del escáner">
+  <i class="fa-solid fa-question"></i>
+</button>
+
 <!-- Botón para cerrar (Z-index altísimo para que no se oculte) -->
 <button class="close-camera-btn" id="btn-close-ar" style="z-index: 9999;">
   <i class="fa-solid fa-xmark"></i>
@@ -9,7 +14,6 @@
 <!-- UI INTERACTIVA SUPERPUESTA CON ENCABEZADO "ESCANEA" Y BOTÓN PARA TOMAR FOTO -->
 <div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">
   
-
   <div style="flex: 1;"></div>
   
   <div style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-bottom: 20px;">
@@ -34,5 +38,35 @@
     <button class="btn-camera-capture" id="btn-camera-capture" title="Tomar foto" style="margin-top: 10px; margin-bottom: 0;">
       <i class="fa-solid fa-camera"></i>
     </button>
+  </div>
+</div>
+
+<!-- MODAL DE AYUDA DE REALIDAD AUMENTADA -->
+<div class="ar-modal-overlay" id="ar-help-modal" style="display: none;">
+  <div class="ar-modal-content">
+    <div class="ar-modal-header">
+      <h3><i class="fa-solid fa-baseball-bat-ball"></i> ¿Cómo funciona el Escáner?</h3>
+      <button class="ar-modal-close" id="btn-close-ar-modal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="ar-modal-body">
+      <p>Bienvenido al escáner interactivo de <strong>Cachando el Dato</strong>. Sigue estos pasos para activar la experiencia:</p>
+      <ul>
+        <li>
+          <i class="fa-solid fa-bullseye"></i>
+          <div><strong>Apunta al logotipo:</strong> Enfoca con la cámara de tu dispositivo hacia el logo oficial de cualquier equipo participante de la Liga Mexicana del Norte.</div>
+        </li>
+        <li>
+          <i class="fa-solid fa-cube"></i>
+          <div><strong>Explora en 3D:</strong> Al reconocer el marcador, se proyectará un modelo tridimensional interactivo sobre el logotipo.</div>
+        </li>
+        <li>
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <div><strong>Interactúa y diviértete:</strong> Usa los botones en pantalla para girar la figura, lanzar confeti o consultar los detalles completos del equipo.</div>
+        </li>
+      </ul>
+    </div>
+    <div class="ar-modal-footer">
+      <button class="btn-modal-entendido" id="btn-ar-got-it">¡ENTENDIDO!</button>
+    </div>
   </div>
 </div>
