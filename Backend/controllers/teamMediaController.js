@@ -1,5 +1,9 @@
+const crypto = require('crypto');
+const fsSync = require('fs');
 const fs = require('fs/promises');
 const path = require('path');
+const { pipeline } = require('stream/promises');
+const { getStorage } = require('firebase-admin/storage');
 const { db, FieldValue } = require('../config/firebase-admin');
 const { uploadsDirectory, normalizeMimeType } = require('../middleware/teamMediaUpload');
 
@@ -12,6 +16,13 @@ const MIME_PREFIXES = {
   'video/mp4': Buffer.from('ftyp'),
   'video/webm': Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
 };
+const FILE_EXTENSIONS = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'video/mp4': '.mp4',
+  'video/webm': '.webm'
+};
 
 const removeUploadedFile = async (filePath) => {
   try {
@@ -20,6 +31,51 @@ const removeUploadedFile = async (filePath) => {
     if (error.code !== 'ENOENT') {
       console.error('No se pudo limpiar un archivo multimedia:', error);
     }
+  }
+};
+
+const uploadMedia = async (file, teamKey, mimeType) => {
+  const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
+  if (!bucketName) {
+    if (process.env.VERCEL) {
+      const error = new Error('Configura FIREBASE_STORAGE_BUCKET con el nombre del bucket de Firebase Storage.');
+      error.status = 503;
+      throw error;
+    }
+
+    return {
+      mediaUrl: `/uploads/team-feed/${path.basename(file.filename)}`,
+      storagePath: null
+    };
+  }
+
+  const bucket = getStorage().bucket(bucketName);
+  const storagePath = `team-feed/${teamKey}/${crypto.randomUUID()}${FILE_EXTENSIONS[mimeType]}`;
+  const downloadToken = crypto.randomUUID();
+  const storageFile = bucket.file(storagePath);
+  await pipeline(
+    fsSync.createReadStream(file.path),
+    storageFile.createWriteStream({
+      resumable: false,
+      metadata: {
+        contentType: mimeType,
+        metadata: { firebaseStorageDownloadTokens: downloadToken }
+      }
+    })
+  );
+
+  return {
+    mediaUrl: `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(bucket.name)}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`,
+    storagePath
+  };
+};
+
+const removeStoredMedia = async (storagePath) => {
+  if (!storagePath || !process.env.FIREBASE_STORAGE_BUCKET) return;
+  try {
+    await getStorage().bucket(process.env.FIREBASE_STORAGE_BUCKET).file(storagePath).delete({ ignoreNotFound: true });
+  } catch (error) {
+    console.error('No se pudo limpiar el archivo de Firebase Storage:', error);
   }
 };
 
@@ -101,6 +157,7 @@ const publicarMediaEquipo = async (req, res) => {
     return res.status(400).json({ error: 'Selecciona una foto o un video.' });
   }
 
+  let storagePath;
   try {
     if (!(await validarTipoReal(file))) {
       await removeUploadedFile(file.path);
@@ -112,9 +169,12 @@ const publicarMediaEquipo = async (req, res) => {
       ? req.body.filter
       : 'none';
     const mimeType = normalizeMimeType(file.mimetype);
+    const storedMedia = await uploadMedia(file, teamKey, mimeType);
+    storagePath = storedMedia.storagePath;
+    await removeUploadedFile(file.path);
     const userDoc = await db.collection('usuarios').doc(req.usuario.id).get();
     const username = userDoc.exists ? userDoc.data().username : 'Aficionado';
-    const mediaUrl = `/uploads/team-feed/${path.basename(file.filename)}`;
+    const mediaUrl = storedMedia.mediaUrl;
     const publicationRef = await db.collection('teamFeed')
       .doc(teamKey)
       .collection('publicaciones')
@@ -123,6 +183,7 @@ const publicarMediaEquipo = async (req, res) => {
         userId: req.usuario.id,
         username,
         mediaUrl,
+        storagePath: storedMedia.storagePath,
         type: mimeType.startsWith('video/') ? 'video' : 'image',
         mimeType,
         filter,
@@ -144,6 +205,10 @@ const publicarMediaEquipo = async (req, res) => {
     });
   } catch (error) {
     await removeUploadedFile(file.path);
+    await removeStoredMedia(storagePath);
+    if (error.status === 503) {
+      return res.status(503).json({ error: error.message });
+    }
     console.error('Error al publicar media del equipo:', error);
     return res.status(500).json({ error: 'No se pudo publicar el archivo en el feed.' });
   }
