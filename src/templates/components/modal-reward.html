@@ -1,8 +1,19 @@
 <div id="reward-modal" class="modal-screen hidden">
   <div class="modal-card reward-card-enhanced">
     <button class="close-modal-btn" id="btn-close-reward"><i class="fa-solid fa-xmark"></i></button>
-    <div class="reward-glow-ring">
-      <div class="reward-icon-circle"><i class="fa-solid fa-trophy" id="reward-icon"></i></div>
+    <div class="reward-model-viewer">
+      <model-viewer
+        id="reward-model"
+        alt="Modelo 3D del premio obtenido"
+        camera-controls
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="24deg"
+        shadow-intensity="1"
+        exposure="1.1"
+        loading="eager">
+      </model-viewer>
+      <p id="reward-model-status" role="status" aria-live="polite">El modelo 3D aparecerá aquí.</p>
     </div>
     <div class="reward-meta-box">
       <span class="rarity-badge-enhanced" id="reward-rarity">RARO</span>

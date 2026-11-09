@@ -1,5 +1,6 @@
 import { teamsData } from '../data/teamsData.js';
 import { state } from '../core/state.js';
+import { apiRequest } from '../core/api.js';
 
 let currentGalleryList = [];
 let currentIndex = 0;
@@ -37,26 +38,31 @@ export function renderTeamDetail(teamKey) {
     tagElem.className = `team-tag banner-tag ${team.tagClass || ''}`;
   }
 
-  // Video local funcional para pruebas fluidas
-  const workingVideoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
-  
-  currentGalleryList = [
-    { type: 'video', src: workingVideoUrl },
-    { type: 'image', src: team.image || team.mediaSrc || 'https://images.unsplash.com/photo-1508801939243-2a0994f3823e?auto=format&fit=crop&w=800&q=80' }
-  ];
+  currentGalleryList = [];
+
+  if (team.image || team.mediaSrc) {
+    const imageSrc = team.image || team.mediaSrc;
+    currentGalleryList.push({ type: 'image', src: imageSrc });
+  }
 
   if (team.gallery && Array.isArray(team.gallery)) {
     team.gallery.forEach(item => {
       const isVid = typeof item === 'object' && item.type === 'video';
+      const src = isVid ? item.src : item;
+      if (typeof src !== 'string' || !src.trim()) return;
       currentGalleryList.push({
         type: isVid ? 'video' : 'image',
-        src: isVid ? item.src : item
+        src
       });
     });
   }
 
   currentIndex = 0;
-  updateMainBanner(currentIndex);
+  if (currentGalleryList.length) {
+    updateMainBanner(currentIndex);
+  } else {
+    renderBannerPlaceholder(team);
+  }
 
   const galleryContainer = document.getElementById('detail-stadium-gallery');
   if (galleryContainer) {
@@ -89,7 +95,15 @@ export function renderTeamDetail(teamKey) {
 
       galleryContainer.appendChild(wrapper);
     });
+    if (currentGalleryList.length === 0) {
+      const emptyGallery = document.createElement('p');
+      emptyGallery.className = 'team-feed-empty';
+      emptyGallery.textContent = 'Aún no hay imágenes de la galería del estadio.';
+      galleryContainer.appendChild(emptyGallery);
+    }
   }
+
+  renderTeamFanFeed(teamKey);
 
   const setTxt = (id, text) => {
     const el = document.getElementById(id);
@@ -148,6 +162,106 @@ function updateMainBanner(index) {
       </div>
     `;
   }
+}
+
+function renderBannerPlaceholder(team) {
+  const banner = document.getElementById('media-banner-container');
+  if (!banner) return;
+  banner.innerHTML = `
+    <div class="team-banner-placeholder">
+      <i class="fa-solid fa-baseball"></i>
+      <span>${team.tag}</span>
+      <small>GALERÍA DEL EQUIPO</small>
+    </div>
+    <div class="banner-overlay" style="pointer-events: none;">
+      <span class="team-tag banner-tag ${team.tagClass || ''}">${team.tag}</span>
+      <span class="banner-caption"><i class="fa-solid fa-camera"></i> MOMENTOS DE LA AFICIÓN</span>
+    </div>
+  `;
+}
+
+async function renderTeamFanFeed(teamKey) {
+  const grid = document.getElementById('team-fan-feed-grid');
+  const status = document.getElementById('team-feed-status');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  if (status) status.textContent = 'Cargando publicaciones...';
+  try {
+    const { publicaciones } = await apiRequest(`/game/team-feed/${encodeURIComponent(teamKey)}`);
+    if (state.currentSelectedTeamKey !== teamKey) return;
+    if (status) status.textContent = '';
+
+    if (!Array.isArray(publicaciones) || publicaciones.length === 0) {
+      renderFeedEmpty(grid, 'Sé el primero en compartir una foto o video de este equipo.');
+      return;
+    }
+
+    publicaciones.forEach((post) => {
+      const media = {
+        type: post.type === 'video' ? 'video' : 'image',
+        src: post.mediaUrl
+      };
+      const mediaIndex = currentGalleryList.push(media) - 1;
+      const card = document.createElement('article');
+      card.className = 'team-feed-card';
+      const mediaElement = post.type === 'video'
+        ? document.createElement('video')
+        : document.createElement('img');
+      mediaElement.className = 'team-feed-media';
+      mediaElement.src = post.mediaUrl;
+      if (post.type === 'video') {
+        mediaElement.muted = true;
+        mediaElement.playsInline = true;
+        mediaElement.preload = 'metadata';
+        mediaElement.setAttribute('aria-label', `Video de ${post.username || 'aficionado'}`);
+      } else {
+        mediaElement.alt = `Foto de ${teamsData[teamKey]?.name || 'el equipo'}`;
+        mediaElement.loading = 'lazy';
+      }
+
+      const openMedia = () => openFullscreenModal(mediaIndex);
+      card.appendChild(mediaElement);
+
+      if (post.caption) {
+        const caption = document.createElement('p');
+        caption.className = 'team-feed-caption';
+        caption.textContent = post.caption;
+        card.appendChild(caption);
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'team-feed-meta';
+      const author = document.createElement('strong');
+      author.textContent = post.username || 'Aficionado';
+      const date = document.createElement('time');
+      const createdAt = new Date(post.createdAt);
+      date.dateTime = Number.isNaN(createdAt.getTime()) ? '' : createdAt.toISOString();
+      date.textContent = Number.isNaN(createdAt.getTime())
+        ? 'Reciente'
+        : createdAt.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+      meta.append(author, date);
+      card.appendChild(meta);
+      card.addEventListener('click', openMedia);
+      grid.appendChild(card);
+    });
+  } catch (error) {
+    if (state.currentSelectedTeamKey !== teamKey) return;
+    console.error('Error al cargar las publicaciones del equipo:', error);
+    if (status) status.textContent = 'No se pudo cargar el feed. Intenta actualizar el equipo.';
+    renderFeedEmpty(grid, 'Las publicaciones aparecerán aquí cuando se pueda conectar con el servidor.');
+  }
+}
+
+function renderFeedEmpty(grid, message) {
+  const empty = document.createElement('p');
+  empty.className = 'team-feed-empty';
+  const icon = document.createElement('i');
+  icon.className = 'fa-solid fa-camera-retro';
+  const text = document.createElement('span');
+  text.textContent = message;
+  empty.append(icon, text);
+  grid.appendChild(empty);
 }
 
 function openFullscreenModal(index) {

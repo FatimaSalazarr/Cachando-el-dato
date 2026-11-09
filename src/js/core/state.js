@@ -1,12 +1,13 @@
 export const state = {
-  userPoints: 80,
+  userPoints: 0,
   currentSelectedTeamKey: 'alg',
   currentUser: {
-    name: 'ac',
-    email: 'ac@gmail.com',
-    itemsCount: 2,
-    rareCount: 1,
-    legendaryCount: 0
+    id: null,
+    token: null,
+    name: '',
+    email: '',
+    fotoPerfil: '',
+    inventory: []
   },
   currentScreen: 'login-screen',
   currentTab: 'home-screen',
@@ -23,6 +24,40 @@ export const state = {
   addPoints(points) {
     this.userPoints += points;
     this.notify('points');
+  },
+
+  setSession({ id, token, name, email, points, fotoPerfil = '' }) {
+    this.currentUser.id = id;
+    this.currentUser.token = token;
+    this.currentUser.name = name;
+    this.currentUser.email = email;
+    this.currentUser.fotoPerfil = fotoPerfil;
+    this.userPoints = points;
+    this.currentUser.inventory = [];
+    this.notify('session');
+  },
+
+  setUserProfile({ name, email, fotoPerfil = this.currentUser.fotoPerfil }) {
+    this.currentUser.name = name;
+    this.currentUser.email = email;
+    this.currentUser.fotoPerfil = fotoPerfil;
+    this.notify('profile');
+  },
+
+  setInventory(inventory) {
+    this.currentUser.inventory = inventory;
+    this.notify('inventory');
+  },
+
+  setPoints(points) {
+    this.userPoints = points;
+    this.notify('points');
+  },
+
+  clearSession() {
+    this.currentUser = { id: null, token: null, name: '', email: '', fotoPerfil: '', inventory: [] };
+    this.userPoints = 0;
+    this.notify('session');
   },
 
   deductPoints(points) {

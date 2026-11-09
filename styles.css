@@ -2,7 +2,7 @@
 
 #login-screen,
 #register-screen {
-  background-image: url("img/FGP_ATELIER_-_DIABLOS_-_18.png") !important;
+  /*background-image: url("img/FGP_ATELIER_-_DIABLOS_-_18.png") !important;*/
   background-size: cover !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;

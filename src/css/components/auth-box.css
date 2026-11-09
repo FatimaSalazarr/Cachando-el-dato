@@ -26,7 +26,7 @@
 #register-screen {
   position: relative;
   background-color: #071526;
-  background-image: url("../../img/FGP_ATELIER_-_DIABLOS_-_18.png");
+  /*background-image: url("../../img/FGP_ATELIER_-_DIABLOS_-_18.png");*/
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -194,6 +194,46 @@
   transform: translateY(-1px);
 }
 
+.register-photo-picker {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.register-photo-preview {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--cyan-accent);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+
+.register-photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-box .register-photo-picker input[type="file"] {
+  height: auto;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.register-photo-picker small {
+  grid-column: 2;
+  margin-top: -6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
 .btn-primary {
   width: 100%;
   height: 52px;
@@ -229,6 +269,48 @@
 .auth-box .auth-link span:hover {
   color: #ffd966;
   text-shadow: 0 0 10px rgba(251, 191, 36, 0.35);
+}
+
+.auth-box .auth-link #forgot-password-link {
+  margin-left: 6px;
+}
+
+.auth-status {
+  min-height: 20px;
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.auth-secondary-form {
+  margin-top: 12px;
+}
+
+.auth-secondary-form h2 {
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-bebas);
+  font-size: 30px;
+  text-align: center;
+}
+
+.auth-secondary-form > p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.auth-back-button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--cyan-accent);
+  cursor: pointer;
+  font: inherit;
 }
 
 @media (max-width: 480px) {

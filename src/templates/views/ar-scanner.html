@@ -1,21 +1,90 @@
+<!-- Motores de Realidad Aumentada -->
+<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
 <!-- Botón de Ayuda (Esquina superior izquierda) -->
 <button class="help-camera-btn" id="btn-ar-help" style="z-index: 9999;" title="Ayuda del escáner">
   <i class="fa-solid fa-question"></i>
 </button>
 
-<!-- Botón para cerrar (Z-index altísimo para que no se oculte) -->
+<!-- Botón para cerrar -->
 <button class="close-camera-btn" id="btn-close-ar" style="z-index: 9999;">
   <i class="fa-solid fa-xmark"></i>
 </button>
 
-<!-- ESCENA DE MIND-AR -->
-<div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+<div id="ar-3d-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+  
+  <a-scene embedded mindar-image="imageTargetSrc: targets/equipos-liga.mind; autoStart: false; uiLoading: no; uiScanning: no;" 
+           color-space="sRGB" renderer="colorManagement: true" 
+           vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    
+    <!-- PRECARGA DE MODELOS (Evita errores 404 y bloqueos de JSON) -->
+    <a-assets>
+      <a-asset-item id="acereros" src="modelos/acereroslogomodelo.glb"></a-asset-item>
+      <a-asset-item id="algodoneros" src="modelos/algodoneroslogo.glb"></a-asset-item>
+      <a-asset-item id="tecos" src="modelos/tecos.glb"></a-asset-item>
+      <a-asset-item id="calientes" src="modelos/calienteslogo.glb"></a-asset-item>
+      <a-asset-item id="charros" src="modelos/charros.glb"></a-asset-item>
+      <a-asset-item id="toros" src="modelos/toroslogo.glb"></a-asset-item>
+      <a-asset-item id="rieleros" src="modelos/rieleros.glb"></a-asset-item>
+      <a-asset-item id="saraperos" src="modelos/saraperos.glb"></a-asset-item>
+      <a-asset-item id="sultanes" src="modelos/sultanes.glb"></a-asset-item>
+      <a-asset-item id="dorados" src="modelos/dorados.glb"></a-asset-item>
+    </a-assets>
 
-<!-- UI INTERACTIVA SUPERPUESTA CON ENCABEZADO "ESCANEA" Y BOTÓN PARA TOMAR FOTO -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    
+    <!-- LOS MODELOS VUELVEN A ESTAR ADENTRO DE SU DETECTOR -->
+    <!-- Mantenemos la escala en 5 y la luz ambiental básica -->
+    <a-light type="ambient" color="#ffffff" intensity="1.5"></a-light>
+
+    <a-entity id="target-0" mindar-image-target="targetIndex: 0">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#acereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+    
+    <a-entity id="target-1" mindar-image-target="targetIndex: 1">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#algodoneros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+    
+    <a-entity id="target-2" mindar-image-target="targetIndex: 2">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#tecos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-3" mindar-image-target="targetIndex: 3">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#calientes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-4" mindar-image-target="targetIndex: 4">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#charros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-5" mindar-image-target="targetIndex: 5">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#toros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-6" mindar-image-target="targetIndex: 6">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#rieleros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-7" mindar-image-target="targetIndex: 7">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#saraperos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-8" mindar-image-target="targetIndex: 8">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#sultanes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="target-9" mindar-image-target="targetIndex: 9">
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#dorados" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+    </a-entity>
+  </a-scene>
+
+</div>
+
+<!-- UI INTERACTIVA SUPERPUESTA -->
 <div id="ar-detected-content" class="ar-overlay-content" style="z-index: 10; pointer-events: none; background: transparent;">
   
   <div style="flex: 1;"></div>
-  
   <div style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-bottom: 20px;">
     
     <div class="ar-action-buttons">
@@ -33,11 +102,48 @@
     </div>
     
     <button class="btn-red-ver-mas" id="btn-ar-more-info">VER MÁS DETALLES</button>
+    <div class="ar-live-filters" id="ar-live-filters" aria-label="Filtro para foto o video">
+      <span>FILTRO</span>
+      <button type="button" class="ar-live-filter active" data-filter="none">Normal</button>
+      <button type="button" class="ar-live-filter" data-filter="blur">Desenfoque</button>
+      <button type="button" class="ar-live-filter" data-filter="sparkles">Brillos</button>
+      <button type="button" class="ar-live-filter" data-filter="thermal">Térmica</button>
+      <button type="button" class="ar-live-filter" data-filter="saturate">Saturada</button>
+    </div>
+    <p class="ar-capture-status" id="ar-capture-status" role="status" aria-live="polite">Reconoce un equipo para activar la captura.</p>
+    <div class="ar-capture-actions">
+      <button class="btn-camera-capture" id="btn-camera-capture" type="button" title="Tomar foto" aria-label="Tomar foto del equipo detectado" disabled>
+        <i class="fa-solid fa-camera"></i>
+      </button>
+      <button class="btn-video-record" id="btn-video-record" type="button" title="Grabar video" aria-label="Grabar video del equipo detectado" disabled>
+        <i class="fa-solid fa-video"></i><span>GRABAR</span>
+      </button>
+    </div>
+  </div>
+</div>
 
-    <!-- Botón para tomar foto movido hacia abajo -->
-    <button class="btn-camera-capture" id="btn-camera-capture" title="Tomar foto" style="margin-top: 10px; margin-bottom: 0;">
-      <i class="fa-solid fa-camera"></i>
-    </button>
+<div class="ar-capture-review hidden" id="ar-capture-review" role="dialog" aria-modal="true" aria-labelledby="ar-review-title">
+  <div class="ar-review-card">
+    <button class="ar-review-close" id="ar-review-close" type="button" aria-label="Cerrar vista previa"><i class="fa-solid fa-xmark"></i></button>
+    <h3 id="ar-review-title">REVISA TU CAPTURA</h3>
+    <p id="ar-review-team" class="ar-review-team"></p>
+    <div class="ar-review-preview" id="ar-review-preview"></div>
+    <p id="ar-review-filter-hint" class="ar-review-filter-hint"></p>
+    <p class="ar-review-label">ELIGE UN FILTRO</p>
+    <div class="ar-review-filters" id="ar-review-filters">
+      <button type="button" class="ar-review-filter active" data-filter="none">Normal</button>
+      <button type="button" class="ar-review-filter" data-filter="blur">Desenfoque</button>
+      <button type="button" class="ar-review-filter" data-filter="sparkles">Brillos</button>
+      <button type="button" class="ar-review-filter" data-filter="thermal">Térmica</button>
+      <button type="button" class="ar-review-filter" data-filter="saturate">Saturada</button>
+    </div>
+    <label class="ar-review-label" for="ar-review-caption">TEXTO PARA EL FEED (OPCIONAL)</label>
+    <textarea id="ar-review-caption" maxlength="180" rows="2" placeholder="Comparte este momento con la afición"></textarea>
+    <p id="ar-review-status" class="ar-review-status" role="status" aria-live="polite"></p>
+    <div class="ar-review-actions">
+      <button class="ar-review-cancel" id="ar-review-cancel" type="button">VOLVER</button>
+      <button class="ar-review-upload" id="ar-review-upload" type="button"><i class="fa-solid fa-cloud-arrow-up"></i> PUBLICAR EN EL FEED</button>
+    </div>
   </div>
 </div>
 
@@ -62,6 +168,10 @@
         <li>
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           <div><strong>Interactúa y diviértete:</strong> Usa los botones en pantalla para girar la figura, lanzar confeti o consultar los detalles completos del equipo.</div>
+        </li>
+        <li>
+          <i class="fa-solid fa-camera"></i>
+          <div><strong>Comparte tu captura:</strong> Cuando se reconozca un equipo, toma una foto o graba un video, aplica un filtro y publícalo en el feed de ese equipo.</div>
         </li>
       </ul>
     </div>

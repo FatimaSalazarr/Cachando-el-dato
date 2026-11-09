@@ -58,7 +58,18 @@
   background: linear-gradient(0deg, rgba(11,25,46,0.85) 0%, transparent 100%);
   width: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+}
+
+.gacha-odds {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-align: center;
+  letter-spacing: 0.4px;
 }
 
 .gacha-header-row {
@@ -180,7 +191,7 @@
   background: linear-gradient(135deg, rgba(23, 48, 88, 0.95) 0%, rgba(11, 25, 46, 0.98) 100%);
   border: 2px solid var(--gold-accent);
   border-radius: 28px;
-  padding: 30px 24px 24px 24px;
+  padding: 22px 24px 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -223,7 +234,38 @@
 
 .reward-meta-box {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
+}
+
+.reward-model-viewer {
+  width: min(100%, 440px);
+  height: clamp(220px, 34vh, 300px);
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+  position: relative;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.2), rgba(11, 25, 46, 0.65) 75%);
+}
+
+.reward-model-viewer model-viewer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --poster-color: transparent;
+  background-color: transparent;
+}
+
+#reward-model-status {
+  position: absolute;
+  inset: auto 8px 8px;
+  z-index: 10;
+  margin: 0;
+  padding: 4px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  pointer-events: none;
 }
 
 .rarity-badge-enhanced {
@@ -237,6 +279,17 @@
   color: #fff;
   margin-bottom: 10px;
   box-shadow: var(--shadow-glow-cyan);
+}
+
+.rarity-badge-enhanced[data-rarity="comun"] {
+  background: #64748b;
+  box-shadow: none;
+}
+
+.rarity-badge-enhanced[data-rarity="legendario"] {
+  background: var(--gold-gradient);
+  color: #0b192e;
+  box-shadow: var(--shadow-glow-gold);
 }
 
 .reward-card-enhanced h2 {

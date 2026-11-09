@@ -1,2 +1,5 @@
 node_modules/
+firebase-key.json
 .env
+/uploads/team-feed/
+vercel.json
