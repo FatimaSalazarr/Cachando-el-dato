@@ -4,6 +4,7 @@ const cors = require('cors'); // Necesario para la conexión con GitHub Pages
 require('dotenv').config();
 const authRoutes = require('./Backend/routes/authRoutes');
 const gameRoutes = require('./Backend/routes/gameRoutes');
+const { uploadsDirectory } = require('./Backend/middleware/teamMediaUpload');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 // Configuración de Middlewares
 app.use(cors());
 app.use(express.json({ limit: '128kb' }));
-app.use('/uploads/team-feed', express.static(path.join(__dirname, 'uploads', 'team-feed'), {
+app.use('/uploads/team-feed', express.static(uploadsDirectory, {
   dotfiles: 'deny',
   index: false
 }));
