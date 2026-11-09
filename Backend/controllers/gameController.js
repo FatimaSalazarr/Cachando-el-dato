@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const COSTO_GACHA = 50;
-const modelosDirectory = path.resolve(__dirname, '..', '..', 'modelos');
+const modelosDirectory = path.resolve(__dirname, '..', '..', 'public', 'modelos');
 
 const obtenerModelosCartas = () => fs.readdirSync(modelosDirectory, { withFileTypes: true })
   .filter((entry) => (
