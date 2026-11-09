@@ -12,6 +12,18 @@
     </div>
 
     <div class="form-group">
+      <label for="register-photo">FOTO DE PERFIL (OPCIONAL)</label>
+      <div class="register-photo-picker">
+        <div class="register-photo-preview" id="register-photo-preview">
+          <i class="fa-solid fa-user"></i>
+          <img id="register-photo-image" alt="Vista previa de la foto de perfil" hidden>
+        </div>
+        <input type="file" id="register-photo" accept="image/*">
+        <small id="register-photo-status">Elige una imagen JPG, PNG o WebP; se optimizará al registrarte.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="register-email">CORREO</label>
       <input type="email" id="register-email" placeholder="correo@ejemplo.com" required>
     </div>

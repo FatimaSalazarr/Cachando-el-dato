@@ -1,10 +1,13 @@
 import { triviaQuestions } from '../data/triviaQuestions.js';
 import { state } from '../core/state.js';
+import { apiRequest } from '../core/api.js';
 
 const kahootColors = ['red', 'blue', 'yellow', 'green'];
 const kahootIcons = ['fa-caret-up', 'fa-diamond', 'fa-circle', 'fa-square'];
+const QUESTIONS_PER_ROUND = 5;
 
 let currentQuestionIndex = 0;
+let triviaRound = [];
 let triviaScore = 0;
 let correctCount = 0;
 let triviaTimer = null;
@@ -21,6 +24,7 @@ export function initTriviaView() {
 }
 
 export function startTrivia() {
+  triviaRound = createTriviaRound();
   currentQuestionIndex = 0;
   triviaScore = 0;
   correctCount = 0;
@@ -49,7 +53,7 @@ function startTimer() {
 }
 
 function autoFailQuestion() {
-  const qData = triviaQuestions[currentQuestionIndex];
+  const qData = triviaRound[currentQuestionIndex];
   const buttons = document.querySelectorAll('.kahoot-option-btn');
 
   buttons.forEach((btn, idx) => {
@@ -66,7 +70,7 @@ function autoFailQuestion() {
 
 function renderQuestion() {
   startTimer();
-  const qData = triviaQuestions[currentQuestionIndex];
+  const qData = triviaRound[currentQuestionIndex];
 
   const progressEl = document.getElementById('trivia-progress');
   const scoreEl = document.getElementById('trivia-score');
@@ -74,7 +78,7 @@ function renderQuestion() {
   const optionsContainer = document.getElementById('trivia-options');
   const nextBtn = document.getElementById('trivia-next-btn');
 
-  if (progressEl) progressEl.textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${triviaQuestions.length}`;
+  if (progressEl) progressEl.textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${triviaRound.length}`;
   if (scoreEl) scoreEl.textContent = `${triviaScore} PTS`;
   if (questionEl) questionEl.textContent = qData.q;
   if (nextBtn) nextBtn.classList.add('hidden');
@@ -98,7 +102,7 @@ function renderQuestion() {
   }
 }
 
-function selectOption(selectedIndex, correctIndex) {
+async function selectOption(selectedIndex, correctIndex) {
   clearInterval(triviaTimer);
   const buttons = document.querySelectorAll('.kahoot-option-btn');
 
@@ -109,9 +113,18 @@ function selectOption(selectedIndex, correctIndex) {
   });
 
   if (selectedIndex === correctIndex) {
-    triviaScore += 10;
     correctCount++;
-    state.addPoints(10);
+    try {
+      const result = await apiRequest('/game/trivia', {
+        method: 'POST',
+        body: JSON.stringify({ puntosGana: 10 })
+      });
+      triviaScore += 10;
+      state.setPoints(result.puntos);
+    } catch (error) {
+      console.error('Error al guardar los puntos de trivia:', error);
+      alert(error.message || 'No se pudieron guardar los puntos de trivia.');
+    }
   }
 
   const scoreEl = document.getElementById('trivia-score');
@@ -122,7 +135,7 @@ function selectOption(selectedIndex, correctIndex) {
 
 function nextQuestion() {
   currentQuestionIndex++;
-  if (currentQuestionIndex < triviaQuestions.length) {
+  if (currentQuestionIndex < triviaRound.length) {
     renderQuestion();
   } else {
     document.getElementById('trivia-quiz')?.classList.add('hidden');
@@ -131,9 +144,9 @@ function nextQuestion() {
     const ratioEl = document.getElementById('trivia-ratio');
     const msgEl = document.getElementById('trivia-final-message');
 
-    if (ratioEl) ratioEl.textContent = `${correctCount}/${triviaQuestions.length}`;
+    if (ratioEl) ratioEl.textContent = `${correctCount}/${triviaRound.length}`;
     if (msgEl) {
-      msgEl.textContent = `Respondiste correctamente ${correctCount} de ${triviaQuestions.length} preguntas y acumulaste ${triviaScore} puntos.`;
+      msgEl.textContent = `Respondiste correctamente ${correctCount} de ${triviaRound.length} preguntas y acumulaste ${triviaScore} puntos.`;
     }
   }
 }
@@ -146,4 +159,28 @@ export function resetTrivia() {
 
 export function destroyTriviaView() {
   clearInterval(triviaTimer);
+}
+
+function createTriviaRound() {
+  const questionPool = shuffle([...triviaQuestions]).slice(0, QUESTIONS_PER_ROUND);
+  return questionPool.map((question) => {
+    const options = shuffle(question.options.map((text, index) => ({
+      text,
+      isCorrect: index === question.correct
+    })));
+
+    return {
+      q: question.q,
+      options: options.map((option) => option.text),
+      correct: options.findIndex((option) => option.isCorrect)
+    };
+  });
+}
+
+function shuffle(items) {
+  for (let index = items.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [items[index], items[randomIndex]] = [items[randomIndex], items[index]];
+  }
+  return items;
 }

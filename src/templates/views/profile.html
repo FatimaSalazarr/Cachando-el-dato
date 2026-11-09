@@ -1,28 +1,59 @@
 <h2 class="screen-title">PERFIL</h2>
+<p id="profile-status" class="profile-status" role="status" aria-live="polite"></p>
 <div class="profile-card">
   <div class="avatar-ring">
-    <i class="fa-solid fa-user"></i>
+    <i class="fa-solid fa-user" id="profile-avatar-fallback"></i>
+    <img id="profile-avatar" alt="Foto de perfil" hidden>
   </div>
   <div class="user-details">
-    <h3 id="profile-user-name">ac</h3>
-    <p id="profile-user-email">ac@gmail.com</p>
-    <span class="pts-accent"><i class="fa-solid fa-coins"></i> <span class="user-pts-display">80</span> pts</span>
+    <h3 id="profile-user-name"></h3>
+    <p id="profile-user-email"></p>
+    <span class="pts-accent"><i class="fa-solid fa-coins"></i> <span class="user-pts-display">0</span> pts</span>
   </div>
 </div>
 
 <div class="stats-grid">
-  <div class="stat-box"><span class="stat-val" id="profile-items-count">2</span><span class="stat-lbl">OBJETOS</span></div>
-  <div class="stat-box"><span class="stat-val gold user-pts-display">80</span><span class="stat-lbl">PUNTOS</span></div>
-  <div class="stat-box"><span class="stat-val blue" id="profile-rare-count">1</span><span class="stat-lbl">RAROS</span></div>
+  <div class="stat-box"><span class="stat-val" id="profile-items-count">0</span><span class="stat-lbl">OBJETOS</span></div>
+  <div class="stat-box"><span class="stat-val gold user-pts-display">0</span><span class="stat-lbl">PUNTOS</span></div>
+  <div class="stat-box"><span class="stat-val blue" id="profile-rare-count">0</span><span class="stat-lbl">RAROS</span></div>
   <div class="stat-box"><span class="stat-val gold" id="profile-legendary-count">0</span><span class="stat-lbl">LEGENDARIOS</span></div>
 </div>
 
+<button class="btn-primary btn-edit-profile" id="btn-edit-profile" type="button">
+  <i class="fa-solid fa-user-pen"></i> EDITAR PERFIL
+</button>
 <button class="btn-primary btn-logout" id="btn-logout">CERRAR SESIÓN</button>
 
-<p class="section-label"><i class="fa-solid fa-box-open"></i> INVENTARIO - 2 OBJETOS</p>
+<div class="profile-edit-overlay hidden" id="profile-edit-modal" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
+  <form class="profile-edit-card" id="profile-edit-form">
+    <h3 id="profile-edit-title">EDITAR PERFIL</h3>
+    <p id="profile-edit-status" class="profile-status" role="status" aria-live="polite"></p>
+
+    <label for="edit-profile-name">NOMBRE</label>
+    <input id="edit-profile-name" name="username" type="text" maxlength="60" required>
+
+    <label for="edit-profile-email">CORREO</label>
+    <input id="edit-profile-email" name="email" type="email" maxlength="254" required>
+
+    <label for="edit-profile-photo">FOTO DE PERFIL</label>
+    <div class="edit-profile-photo-row">
+      <img id="edit-profile-photo-preview" alt="Vista previa de la foto de perfil" hidden>
+      <input id="edit-profile-photo" type="file" accept="image/*">
+    </div>
+    <label class="remove-profile-photo-label" for="remove-profile-photo">
+      <input id="remove-profile-photo" type="checkbox">
+      Quitar foto actual
+    </label>
+
+    <div class="profile-edit-actions">
+      <button class="profile-edit-cancel" id="btn-cancel-profile-edit" type="button">CANCELAR</button>
+      <button class="btn-primary" id="btn-save-profile" type="submit">GUARDAR CAMBIOS</button>
+    </div>
+  </form>
+</div>
+
+<p class="section-label"><i class="fa-solid fa-box-open"></i> INVENTARIO - <span id="profile-inventory-count">0 OBJETOS</span></p>
 <div class="inventory-grid">
-  <div class="slot filled common"><span class="slot-rarity">C</span><strong>ALG</strong><small>CALCOMANÍA</small></div>
-  <div class="slot filled rare"><span class="slot-rarity">R</span><strong>LIG</strong><small>TARJETA</small></div>
   <div class="slot empty"></div><div class="slot empty"></div>
   <div class="slot empty"></div><div class="slot empty"></div>
   <div class="slot empty"></div><div class="slot empty"></div>

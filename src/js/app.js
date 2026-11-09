@@ -126,7 +126,7 @@ class App {
     }
 
     if (tabId === 'profile-screen') {
-      renderProfile();
+      void renderProfile();
     }
   }
 
@@ -153,6 +153,7 @@ class App {
   }
 
   logout() {
+    state.clearSession();
     document.getElementById('app-content')?.classList.add('hidden');
     switchAuthScreen('login-screen');
   }
