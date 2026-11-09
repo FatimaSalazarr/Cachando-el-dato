@@ -1,12 +1,18 @@
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
-// Usa la variable de entorno en Vercel, o el archivo local en tu computadora
 let serviceAccount;
+
 if (process.env.FIREBASE_CREDENTIALS) {
+  // En Vercel, lee exclusivamente desde la variable de entorno
   serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 } else {
-  serviceAccount = require('../../firebase-key.json');
+  // En local, intenta leer el archivo sin romper el servidor si no existe
+  try {
+    serviceAccount = require('../../firebase-key.json');
+  } catch (error) {
+    console.warn("Advertencia: No se encontró firebase-key.json localmente.");
+  }
 }
 
 initializeApp({
