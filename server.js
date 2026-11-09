@@ -16,7 +16,7 @@ app.use('/uploads/team-feed', express.static(uploadsDirectory, {
   dotfiles: 'deny',
   index: false
 }));
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Montar las rutas modulares de la API
 app.use('/api/auth', authRoutes);
@@ -26,7 +26,7 @@ app.use('/api/game', gameRoutes);
 
 // Ruta de respaldo para servir tu frontend estático
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Inicialización del servidor: Solo se ejecuta en tu computadora (modo desarrollo)
