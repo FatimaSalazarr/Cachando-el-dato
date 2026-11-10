@@ -70,11 +70,15 @@
 }
 
 .avatar-ring img[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .avatar-ring #profile-avatar-fallback {
   position: absolute;
+}
+
+.avatar-ring #profile-avatar-fallback[hidden] {
+  display: none !important;
 }
 
 .user-details {

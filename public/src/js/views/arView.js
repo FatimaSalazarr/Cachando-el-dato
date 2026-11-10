@@ -6,10 +6,14 @@ import { apiRequest } from '../core/api.js';
 let isSpinning = false;
 let eventosAgregados = false; 
 let detectedTeamKey = null;
+const modelBasePositions = new WeakMap();
 let openTeamDetailCallback = null;
 let recordingSession = null;
 let activeFilter = 'none';
 let modelEventsAdded = false;
+let arSceneResizeObserver = null;
+let observedARScene = null;
+const modelBaseTransforms = new WeakMap();
 let capturePressTimer = null;
 let captureGestureRecording = false;
 let isCapturingPhoto = false;
@@ -21,6 +25,19 @@ const CAPTURE_FILTERS = {
   thermal: 'hue-rotate(180deg) saturate(2.2) invert(0.12)',
   saturate: 'saturate(2.5)',
   sparkles: 'brightness(1.12) saturate(1.3)'
+};
+
+const TEAM_TARGET_INDICES = {
+  ace: 0,
+  alg: 1,
+  tec: 2,
+  cal: 3,
+  cha: 4,
+  tor: 5,
+  rie: 6,
+  soc: 7,
+  sul: 8,
+  dor: 9
 };
 
 export function initARView(onOpenFullInfoCallback) {
@@ -453,15 +470,15 @@ export function closeARView() {
 }
 
 export function toggleModelSpin() {
+  if (!detectedTeamKey) return;
   isSpinning = !isSpinning;
-  const models = document.querySelectorAll('a-gltf-model');
-  models.forEach(model => {
-    if (isSpinning) {
-      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
-    } else {
-      model.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true');
-    }
-  });
+  const targetIndex = TEAM_TARGET_INDICES[detectedTeamKey];
+  const model = document.querySelector(`#target-${targetIndex} a-gltf-model`);
+  if (!model) return;
+
+  const duration = isSpinning ? 2000 : 4000;
+  model.setAttribute('animation', `property: rotation; to: 0 360 0; dur: ${duration}; easing: linear; loop: true`);
+  model.components.animation?.play();
 }
 
 export function triggerConfetti() {
@@ -479,14 +496,18 @@ function abrirEscenaAR() {
 
   const sceneEl = document.querySelector('a-scene');
   initializeARModels();
+  observeARSceneSize(sceneEl);
   if (sceneEl && sceneEl.systems["mindar-image-system"]) {
     try {
+      scheduleARSceneResize(sceneEl);
       const startResult = sceneEl.systems["mindar-image-system"].start();
       if (startResult && typeof startResult.catch === 'function') {
-        startResult.catch((error) => {
-          console.error('No se pudo iniciar la cámara del escáner:', error);
-          setCaptureStatus('No se pudo iniciar la cámara. Revisa los permisos del navegador.');
-        });
+        startResult
+          .then(() => scheduleARSceneResize(sceneEl))
+          .catch((error) => {
+            console.error('No se pudo iniciar la cámara del escáner:', error);
+            setCaptureStatus('No se pudo iniciar la cámara. Revisa los permisos del navegador.');
+          });
       }
     } catch (error) {
       console.error('No se pudo iniciar la cámara del escáner:', error);
@@ -497,17 +518,12 @@ function abrirEscenaAR() {
   if (eventosAgregados) return;
 
   // Solo usamos JavaScript para actualizar los textos, A-Frame dibuja los modelos
-  const mapeoEquipos = {
-    0: 'ace', 1: 'alg', 2: 'tec', 3: 'cal', 4: 'cha',
-    5: 'tor', 6: 'rie', 7: 'soc', 8: 'sul', 9: 'dor'
-  };
-
-  Object.keys(mapeoEquipos).forEach(index => {
+  Object.entries(TEAM_TARGET_INDICES).forEach(([teamKey, index]) => {
     const targetEntity = document.querySelector(`#target-${index}`);
     if (targetEntity) {
       
-     targetEntity.addEventListener('targetFound', () => {
-        const teamKey = mapeoEquipos[index];
+      targetEntity.addEventListener('targetFound', () => {
+        targetEntity.setAttribute('data-target-found', 'true');
         const team = teamsData[teamKey];
         
         if (team) {
@@ -517,6 +533,7 @@ function abrirEscenaAR() {
           if (model) {
             model.setAttribute('visible', true);
             if (model.getObject3D('mesh')) fitARModel(model);
+            model.components.animation?.play();
           }
           if (titleEl) titleEl.textContent = team.name;
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
@@ -526,6 +543,8 @@ function abrirEscenaAR() {
       });
 
       targetEntity.addEventListener('targetLost', () => {
+        targetEntity.setAttribute('data-target-found', 'false');
+        targetEntity.querySelector('a-gltf-model')?.components.animation?.pause();
         if (titleEl) titleEl.textContent = 'Buscando marcador...';
         if (detectedTeamKey) {
           const detectedTeam = teamsData[detectedTeamKey];
@@ -540,51 +559,101 @@ function abrirEscenaAR() {
   eventosAgregados = true;
 }
 
+function observeARSceneSize(sceneEl) {
+  if (!sceneEl) return;
+  if (typeof ResizeObserver !== 'function') {
+    scheduleARSceneResize(sceneEl);
+    return;
+  }
+
+  if (!arSceneResizeObserver) {
+    arSceneResizeObserver = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+          scheduleARSceneResize(sceneEl);
+        }
+      });
+    });
+  }
+
+  if (observedARScene !== sceneEl) {
+    arSceneResizeObserver.observe(sceneEl);
+    observedARScene = sceneEl;
+  }
+}
+
+function scheduleARSceneResize(sceneEl) {
+  if (!sceneEl) return;
+  requestAnimationFrame(() => {
+    const { width, height } = sceneEl.getBoundingClientRect();
+    if (width > 0 && height > 0 && sceneEl.renderer && typeof sceneEl.resize === 'function') {
+      sceneEl.resize();
+    }
+  });
+}
+
 function initializeARModels() {
   if (modelEventsAdded) return;
   document.querySelectorAll('#ar-3d-container a-gltf-model').forEach((model) => {
-    model.addEventListener('model-loaded', () => fitARModel(model));
+    model.addEventListener('model-loaded', () => {
+      if (model.parentElement?.getAttribute('data-target-found') === 'true') {
+        fitARModel(model);
+        model.components.animation?.play();
+      } else {
+        model.components.animation?.pause();
+      }
+    });
     model.addEventListener('model-error', (event) => {
       console.error(`No se pudo cargar el modelo AR ${model.getAttribute('src')}:`, event.detail);
       setCaptureStatus('No se pudo cargar el modelo 3D de este equipo.');
     });
-    if (model.getObject3D('mesh')) fitARModel(model);
+    if (model.getObject3D('mesh')) model.components.animation?.pause();
   });
   modelEventsAdded = true;
 }
 
 function fitARModel(model) {
   const THREE = window.AFRAME?.THREE;
-  const object3D = model.getObject3D('mesh');
-  if (!THREE || !object3D) {
+  const gltfRoot = model.getObject3D('mesh');
+  if (!THREE || !gltfRoot) {
     console.error('No se pudo preparar el modelo 3D del equipo.');
     setCaptureStatus('No se pudo preparar el modelo 3D de este equipo.');
     return;
   }
 
-  model.object3D.position.set(0, 0, 0);
-  model.object3D.scale.set(1, 1, 1);
-  model.object3D.updateMatrixWorld(true);
-  object3D.updateMatrixWorld(true);
-  const bounds = new THREE.Box3().setFromObject(object3D);
+  const bounds = new THREE.Box3();
+  gltfRoot.traverse((node) => {
+    if (!node.isMesh || !node.geometry) return;
+    if (!node.geometry.boundingBox) node.geometry.computeBoundingBox();
+    if (!node.geometry.boundingBox) return;
+
+    const hierarchy = [];
+    for (let current = node; current && current !== gltfRoot; current = current.parent) {
+      hierarchy.push(current);
+    }
+
+    const localTransform = new THREE.Matrix4();
+    hierarchy.reverse().forEach((part) => {
+      part.updateMatrix();
+      localTransform.multiply(part.matrix);
+    });
+    bounds.union(new THREE.Box3().copy(node.geometry.boundingBox).applyMatrix4(localTransform));
+  });
+
   if (bounds.isEmpty()) {
     console.error('El modelo 3D del equipo no contiene geometría visible.');
     setCaptureStatus('El modelo 3D de este equipo no contiene geometría visible.');
     return;
   }
 
-  const size = bounds.getSize(new THREE.Vector3());
-  const largestDimension = Math.max(size.x, size.y, size.z);
-  if (!Number.isFinite(largestDimension) || largestDimension <= 0) {
-    console.error('No se pudo calcular el tamaño del modelo 3D del equipo.');
-    setCaptureStatus('No se pudo ajustar el tamaño del modelo 3D de este equipo.');
-    return;
-  }
-
-  const scale = 0.65 / largestDimension;
   const center = bounds.getCenter(new THREE.Vector3());
-  const targetZ = 0.12;
-  model.object3D.scale.setScalar(scale);
-  model.object3D.position.set(-center.x * scale, -center.y * scale, targetZ - center.z * scale);
-  model.object3D.updateMatrixWorld(true);
+  if (!modelBaseTransforms.has(model)) {
+    modelBaseTransforms.set(model, { rootPosition: gltfRoot.position.clone() });
+  }
+  const basePosition = modelBaseTransforms.get(model).rootPosition;
+  gltfRoot.position.set(
+    basePosition.x - center.x,
+    basePosition.y - center.y,
+    basePosition.z - center.z
+  );
 }
