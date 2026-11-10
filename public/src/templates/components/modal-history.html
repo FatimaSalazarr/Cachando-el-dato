@@ -1,33 +1,44 @@
 <div id="history-modal" class="history-modal-overlay hidden">
-  <div class="history-modal-container">
-    <button class="close-modal-btn" id="btn-close-history"><i class="fa-solid fa-xmark"></i></button>
+  <div class="history-modal-container" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+    <button class="close-modal-btn" id="btn-close-history" aria-label="Cerrar historia"><i class="fa-solid fa-xmark"></i></button>
     <div class="history-modal-header">
       <div class="history-modal-icon"><i class="fa-solid fa-book-bookmark"></i></div>
       <div>
-        <span class="history-modal-tag">ENCICLOPEDIA DEL REY</span>
-        <h2>HISTORIA DEL BÉISBOL</h2>
+        <span class="history-modal-tag">MÉXICO · GRANDES LIGAS · NORTE</span>
+        <h2 id="history-modal-title">HISTORIA DEL BÉISBOL</h2>
       </div>
     </div>
     <div class="history-modal-scroll">
-      <div class="history-hero-banner">
-        <img src="" alt="Béisbol Histórico">
-        <div class="history-hero-caption"><i class="fa-solid fa-camera"></i> Archivo Histórico Tradicional</div>
+      <div class="history-intro">
+        <span class="history-intro-kicker">UN JUEGO, MUCHAS REGIONES</span>
+        <p>La historia del béisbol en México se ha escrito en parques de barrio, ciudades fronterizas y grandes estadios. El norte aporta una identidad propia a esa tradición.</p>
       </div>
-      <div class="history-chapter-box">
-        <h4><i class="fa-solid fa-globe"></i> Los Orígenes Globales</h4>
-        <p>El béisbol moderno tiene sus raíces profundas en los juegos tradicionales de bate y pelota practicados en Inglaterra durante el siglo XVIII...</p>
-      </div>
-      <div class="history-chapter-box">
-        <h4><i class="fa-solid fa-flag"></i> La Llegada a México</h4>
-        <p>A <strong>México</strong> el béisbol arribó a finales del siglo XIX a través de los estados fronterizos del norte...</p>
-      </div>
-      <div class="history-chapter-box">
-        <h4><i class="fa-solid fa-trophy"></i> El Auge del Norte</h4>
-        <p>La <strong>Liga Mexicana del Norte</strong> y los circuitos invernales han forjado una rica leyenda de entrega absoluta...</p>
-      </div>
+      <ol class="history-timeline">
+        <li class="history-chapter-box">
+          <span class="history-year">SIGLO XIX</span>
+          <h4><i class="fa-solid fa-globe"></i> El juego llega a México</h4>
+          <p>El béisbol se difundió en el país durante el siglo XIX por distintas rutas, entre ellas ciudades portuarias y fronterizas. Su expansión no tiene una sola fecha o ciudad de origen: cada región conserva sus propios relatos y primeras novenas.</p>
+        </li>
+        <li class="history-chapter-box">
+          <span class="history-year">1925</span>
+          <h4><i class="fa-solid fa-flag"></i> Una liga nacional</h4>
+          <p>La Liga Mexicana de Béisbol inició en 1925 y ayudó a consolidar el circuito profesional. Es una liga distinta de las competencias regionales del norte, aunque ambas forman parte de la historia beisbolera del país.</p>
+        </li>
+        <li class="history-chapter-box">
+          <span class="history-year">EL NORTE</span>
+          <h4><i class="fa-solid fa-map-location-dot"></i> Identidad de la Liga del Norte</h4>
+          <p>Las ligas norteñas acercan el béisbol profesional a sus comunidades y han servido de escenario para el desarrollo de jugadores. Sus equipos y formatos cambian según la época; la memoria de cada club vive también en sus ciudades y aficiones.</p>
+        </li>
+        <li class="history-chapter-box">
+          <span class="history-year">1981</span>
+          <h4><i class="fa-solid fa-star"></i> Un ídolo que cruzó fronteras</h4>
+          <p>Fernando Valenzuela cautivó a la afición de los Dodgers y protagonizó la «Fernandomanía». Su impacto puso a un pelotero mexicano en el centro de la conversación beisbolera internacional.</p>
+        </li>
+      </ol>
+      <p class="history-note">La historia de cada equipo merece verificarse con archivos y fuentes de su propia comunidad.</p>
     </div>
     <div class="history-modal-footer">
-      <button class="btn-primary" id="btn-history-understood">¡ENTENDIDO!</button>
+      <button class="btn-primary" id="btn-history-understood">¡A SEGUIR CACHANDO HISTORIAS!</button>
     </div>
   </div>
 </div>

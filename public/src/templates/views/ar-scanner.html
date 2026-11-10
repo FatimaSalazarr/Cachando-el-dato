@@ -112,37 +112,9 @@
     </div>
     <p class="ar-capture-status" id="ar-capture-status" role="status" aria-live="polite">Reconoce un equipo para activar la captura.</p>
     <div class="ar-capture-actions">
-      <button class="btn-camera-capture" id="btn-camera-capture" type="button" title="Tomar foto" aria-label="Tomar foto del equipo detectado" disabled>
-        <i class="fa-solid fa-camera"></i>
+      <button class="btn-camera-capture" id="btn-camera-capture" type="button" title="Tomar foto o grabar video" aria-label="Toca para tomar una foto o mantén presionado para grabar video" disabled>
+        <i class="fa-solid fa-camera"></i><span>TOCA: FOTO · MANTÉN: VIDEO</span>
       </button>
-      <button class="btn-video-record" id="btn-video-record" type="button" title="Grabar video" aria-label="Grabar video del equipo detectado" disabled>
-        <i class="fa-solid fa-video"></i><span>GRABAR</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<div class="ar-capture-review hidden" id="ar-capture-review" role="dialog" aria-modal="true" aria-labelledby="ar-review-title">
-  <div class="ar-review-card">
-    <button class="ar-review-close" id="ar-review-close" type="button" aria-label="Cerrar vista previa"><i class="fa-solid fa-xmark"></i></button>
-    <h3 id="ar-review-title">REVISA TU CAPTURA</h3>
-    <p id="ar-review-team" class="ar-review-team"></p>
-    <div class="ar-review-preview" id="ar-review-preview"></div>
-    <p id="ar-review-filter-hint" class="ar-review-filter-hint"></p>
-    <p class="ar-review-label">ELIGE UN FILTRO</p>
-    <div class="ar-review-filters" id="ar-review-filters">
-      <button type="button" class="ar-review-filter active" data-filter="none">Normal</button>
-      <button type="button" class="ar-review-filter" data-filter="blur">Desenfoque</button>
-      <button type="button" class="ar-review-filter" data-filter="sparkles">Brillos</button>
-      <button type="button" class="ar-review-filter" data-filter="thermal">Térmica</button>
-      <button type="button" class="ar-review-filter" data-filter="saturate">Saturada</button>
-    </div>
-    <label class="ar-review-label" for="ar-review-caption">TEXTO PARA EL FEED (OPCIONAL)</label>
-    <textarea id="ar-review-caption" maxlength="180" rows="2" placeholder="Comparte este momento con la afición"></textarea>
-    <p id="ar-review-status" class="ar-review-status" role="status" aria-live="polite"></p>
-    <div class="ar-review-actions">
-      <button class="ar-review-cancel" id="ar-review-cancel" type="button">VOLVER</button>
-      <button class="ar-review-upload" id="ar-review-upload" type="button"><i class="fa-solid fa-cloud-arrow-up"></i> PUBLICAR EN EL FEED</button>
     </div>
   </div>
 </div>
@@ -171,7 +143,7 @@
         </li>
         <li>
           <i class="fa-solid fa-camera"></i>
-          <div><strong>Comparte tu captura:</strong> Cuando se reconozca un equipo, toma una foto o graba un video, aplica un filtro y publícalo en el feed de ese equipo.</div>
+          <div><strong>Comparte tu captura:</strong> Toca el botón para tomar una foto o mantenlo presionado para grabar un video corto. Se publicará automáticamente en el feed de ese equipo.</div>
         </li>
       </ul>
     </div>

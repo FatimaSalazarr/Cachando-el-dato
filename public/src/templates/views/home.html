@@ -1,75 +1,28 @@
 <div class="top-bar-placeholder"></div>
 
-<h2 class="page-title">CACHANDO <span>EL DATO</span></h2>
-<p class="league-sub">LIGA MEXICANA DEL NORTE · TEMPORADA</p>
+  <h2 class="page-title">CACHANDO <span>EL DATO</span></h2>
+  <p class="league-sub">BÉISBOL MEXICANO · PASIÓN DEL NORTE</p>
 
-<!-- 1. CARRUSEL DE NOTICIAS -->
-<p class="section-label"><i class="fa-solid fa-newspaper"></i> NOTICIAS ACTUALES</p>
-<div class="news-carousel-container prominent-news">
-  <div class="news-carousel-track" id="news-track">
-    <div class="news-slide active">
-      <span class="team-tag tag-cul">ALG</span>
-      <h4>Algodoneros domina la temporada con 12 victorias consecutivas</h4>
-      <p>Gran exhibición de pitcheo y ofensiva en la gira por el norte.</p>
-      <span class="news-time">Hace 2 horas</span>
+  <!-- Noticias consultadas desde GNews -->
+  <p class="section-label"><i class="fa-solid fa-newspaper"></i> NOTICIAS DE BÉISBOL</p>
+  <p class="feed-source-note">Actualidad en español · Selección de medios</p>
+  <div class="news-carousel-container prominent-news" aria-live="polite">
+    <div class="news-carousel-track" id="news-track">
+      <p class="feed-status" role="status">Cargando noticias…</p>
     </div>
-    <div class="news-slide">
-      <span class="team-tag tag-her">CAL</span>
-      <h4>Calientes asegura serie clave en casa con cuadrangular dramático</h4>
-      <p>El batazo en la novena entrada desató la euforia en Durango.</p>
-      <span class="news-time">Hace 5 horas</span>
-    </div>
-    <div class="news-slide">
-      <span class="team-tag tag-obr">CHA</span>
-      <h4>Charros refuerza su rotación abridora rumbo a la postemporada</h4>
-      <p>La directiva anuncia la contratación de estelar lanzador internacional.</p>
-      <span class="news-time">Ayer</span>
-    </div>
+    <div class="carousel-dots" id="carousel-dots" aria-label="Seleccionar noticia"></div>
   </div>
-  <div class="carousel-dots" id="carousel-dots">
-    <span class="dot active" data-slide="0"></span>
-    <span class="dot" data-slide="1"></span>
-    <span class="dot" data-slide="2"></span>
-  </div>
-</div>
 
-<!-- 2. PRÓXIMOS PARTIDOS -->
-<p class="section-label"><i class="fa-solid fa-calendar-days"></i> PRÓXIMOS PARTIDOS</p>
-<div class="upcoming-games-list">
-  <div class="match-card">
-    <div class="match-teams">
-      <div class="match-team-item">
-        <img src="img/algodoneros.png" alt="Algodoneros" class="match-team-logo">
-      </div>
-      <span class="vs-text">VS</span>
-      <div class="match-team-item">
-        <img src="img/calientes.png" alt="Calientes" class="match-team-logo">
-      </div>
-    </div>
-    <div class="match-info">
-      <p><i class="fa-solid fa-building-columns"></i> Estadio Kuroda Park</p>
-      <p><i class="fa-solid fa-clock"></i> Jueves 20 Ago · 7:30 PM</p>
-    </div>
-  </div>
-  <div class="match-card">
-    <div class="match-teams">
-      <div class="match-team-item">
-        <img src="img/charros.png" alt="Charros" class="match-team-logo">
-      </div>
-      <span class="vs-text">VS</span>
-      <div class="match-team-item">
-        <img src="img/dorados.png" alt="Dorados" class="match-team-logo">
-      </div>
-    </div>
-    <div class="match-info">
-      <p><i class="fa-solid fa-building-columns"></i> Estadio Panamericano</p>
-      <p><i class="fa-solid fa-clock"></i> Viernes 21 Ago · 8:00 PM</p>
-    </div>
+  <!-- Calendario oficial de la Liga Mexicana de Beisbol -->
+  <p class="section-label"><i class="fa-solid fa-calendar-days"></i> PRÓXIMOS PARTIDOS · LMB</p>
+  <p class="feed-source-note">Liga Mexicana de Beisbol · Próximos 7 días</p>
+  <div class="upcoming-games-list" id="upcoming-games-list" aria-live="polite">
+    <p class="feed-status" role="status">Cargando calendario…</p>
   </div>
 </div>
 
 <!-- 3. EQUIPOS DE LA LIGA -->
-<p class="section-label"><i class="fa-solid fa-shield-halved"></i> EQUIPOS DE LA LIGA DEL NORTE</p>
+<p class="section-label"><i class="fa-solid fa-shield-halved"></i> EQUIPOS DEL BÉISBOL MEXICANO</p>
 <div class="teams-cube-grid">
   <div class="team-cube-item" data-team-key="alg">
     <div class="cube-logo-badge"><img src="img/algodoneros.png" alt="Algodoneros"></div>
@@ -114,7 +67,7 @@
 </div>
 
 <!-- 4. HISTORIA DEL BÉISBOL -->
-<p class="section-label"><i class="fa-solid fa-book-open"></i> HISTORIA DEL BÉISBOL</p>
+<p class="section-label"><i class="fa-solid fa-book-open"></i> HISTORIA DEL BÉISBOL MEXICANO</p>
 <button class="btn-history-action" id="btn-open-history">
-  <i class="fa-solid fa-book-bookmark"></i> VER HISTORIA DE BÉISBOL
+  <i class="fa-solid fa-book-bookmark"></i> RECORRER LA HISTORIA
 </button>

@@ -1,6 +1,7 @@
 export const teamsData = {
   alg: {
     name: 'Algodoneros de Guasave',
+    logo: '/img/algodoneros.png',
     tag: 'ALG',
     tagClass: 'tag-cul',
     city: 'Guasave, Sinaloa',
@@ -26,6 +27,7 @@ export const teamsData = {
 
   cal: {
     name: 'Calientes de Durango',
+    logo: '/img/calientes.png',
     tag: 'CAL',
     tagClass: 'tag-her',
     city: 'Durango, Durango',
@@ -51,6 +53,7 @@ export const teamsData = {
 
   cha: {
     name: 'Charros de Jalisco',
+    logo: '/img/charros.png',
     tag: 'CHA',
     tagClass: 'tag-obr',
     city: 'Zapopan, Jalisco',
@@ -76,6 +79,7 @@ export const teamsData = {
 
   dor: {
     name: 'Dorados de Chihuahua',
+    logo: '/img/dorados.png',
     tag: 'DOR',
     tagClass: 'tag-nav',
     city: 'Chihuahua, Chihuahua',
@@ -101,6 +105,7 @@ export const teamsData = {
 
   ace: {
     name: 'Acereros de Monclova',
+    logo: '/img/Logoacerero.png',
     tag: 'ACE',
     tagClass: 'tag-cul',
     city: 'Monclova, Coahuila',
@@ -126,6 +131,7 @@ export const teamsData = {
 
   rie: {
     name: 'Rieleros de Aguascalientes',
+    logo: '/img/RielerosCapLogo.png',
     tag: 'RIE',
     tagClass: 'tag-nav',
     city: 'Aguascalientes, Aguascalientes',
@@ -151,6 +157,7 @@ export const teamsData = {
 
   tec: {
     name: 'Tecos de los Dos Laredos',
+    logo: '/img/Logotecos.png',
     tag: 'TEC',
     tagClass: 'tag-her',
     city: 'Nuevo Laredo / Laredo',
@@ -176,6 +183,7 @@ export const teamsData = {
 
   tor: {
     name: 'Toros de Tijuana',
+    logo: '/img/Logotoros.png',
     tag: 'TOR',
     tagClass: 'tag-obr',
     city: 'Tijuana, Baja California',
@@ -201,6 +209,7 @@ export const teamsData = {
 
   soc: {
     name: 'Saraperos de Saltillo',
+    logo: '/img/socaleros.png',
     tag: 'SOC',
     tagClass: 'tag-cul',
     city: 'Saltillo, Coahuila',
@@ -226,6 +235,7 @@ export const teamsData = {
 
   sul: {
     name: 'Sultanes de Monterrey',
+    logo: '/img/sultanes.png',
     tag: 'SUL',
     tagClass: 'tag-her',
     city: 'Monterrey, Nuevo León',
