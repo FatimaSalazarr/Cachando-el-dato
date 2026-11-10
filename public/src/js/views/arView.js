@@ -3,11 +3,11 @@ import { state } from '../core/state.js';
 import { apiRequest } from '../core/api.js';
 
 
-let isSpinning = false;
 let eventosAgregados = false; 
 let detectedTeamKey = null;
 const modelBasePositions = new WeakMap();
 let openTeamDetailCallback = null;
+let arConfetti = null;
 let recordingSession = null;
 let activeFilter = 'none';
 let modelEventsAdded = false;
@@ -43,10 +43,13 @@ const TEAM_TARGET_INDICES = {
 export function initARView(onOpenFullInfoCallback) {
   openTeamDetailCallback = onOpenFullInfoCallback;
   const btnClose = document.getElementById('btn-close-ar');
-  const btnSpin = document.getElementById('btn-ar-spin');
   const btnConfetti = document.getElementById('btn-ar-confetti');
   const btnCapture = document.getElementById('btn-camera-capture');
   const btnMoreInfo = document.getElementById('btn-ar-more-info');
+  const confettiCanvas = document.getElementById('ar-confetti-canvas');
+  if (confettiCanvas && typeof window.confetti?.create === 'function') {
+    arConfetti = window.confetti.create(confettiCanvas, { resize: true });
+  }
 
   // Referencias para el modal de ayuda nuevo
   const btnHelp = document.getElementById('btn-ar-help');
@@ -55,7 +58,6 @@ export function initARView(onOpenFullInfoCallback) {
   const btnArGotIt = document.getElementById('btn-ar-got-it');
 
   if (btnClose) btnClose.onclick = () => closeARView();
-  if (btnSpin) btnSpin.onclick = () => toggleModelSpin();
   if (btnConfetti) btnConfetti.onclick = () => triggerConfetti();
   if (btnCapture) {
     btnCapture.onpointerdown = (event) => {
@@ -443,6 +445,7 @@ export function openVRDirectly(teamKey) {
 }
 
 export function closeARView() {
+  arConfetti?.reset();
   if (recordingSession) {
     recordingSession.discard = true;
     stopVideoRecording();
@@ -473,8 +476,6 @@ export function closeARView() {
   // Ocultar también el modal de ayuda si estuviera abierto
   const arHelpModal = document.getElementById('ar-help-modal');
   if (arHelpModal) arHelpModal.style.display = 'none';
-
-  isSpinning = false;
 }
 
 function clearDetectedARModels() {
@@ -492,22 +493,17 @@ function resetDetectedTeamInfo() {
   if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
 }
 
-export function toggleModelSpin() {
-  if (!detectedTeamKey) return;
-  isSpinning = !isSpinning;
-  const targetIndex = TEAM_TARGET_INDICES[detectedTeamKey];
-  const model = document.querySelector(`#target-${targetIndex} a-gltf-model`);
-  if (!model) return;
-
-  const duration = isSpinning ? 2000 : 4000;
-  model.setAttribute('animation', `property: rotation; to: 0 360 0; dur: ${duration}; easing: linear; loop: true`);
-  model.components.animation?.play();
-}
-
 export function triggerConfetti() {
-  if (typeof window.confetti === 'function') {
-    window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+  if (!arConfetti) {
+    console.error('No se pudo inicializar el confeti del escáner.');
+    return;
   }
+  arConfetti({
+    particleCount: 120,
+    spread: 90,
+    startVelocity: 45,
+    origin: { x: 0.5, y: 0.65 }
+  });
 }
 
 function abrirEscenaAR() {
