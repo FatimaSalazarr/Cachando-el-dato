@@ -819,6 +819,19 @@
   box-shadow: var(--shadow-glow-cyan);
 }
 
+.mfm-save-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.mfm-save-status {
+  min-height: 16px;
+  margin: -4px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
 .success-icon-badge {
   font-size: 48px;
   color: var(--cyan-accent, #38bdf8);
