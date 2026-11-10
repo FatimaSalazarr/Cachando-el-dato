@@ -1,0 +1,33 @@
+.swal2-popup.app-swal-popup {
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(20, 42, 78, 0.98), rgba(11, 25, 46, 0.99));
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+.app-swal-popup .app-swal-title {
+  color: var(--text-primary);
+  font-family: var(--font-bebas);
+}
+
+.app-swal-popup .swal2-html-container {
+  color: var(--text-secondary);
+}
+
+.app-swal-popup .app-swal-confirm {
+  min-height: 42px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue-gradient);
+  color: #fff;
+  font-family: var(--font-bebas);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.app-swal-popup .app-swal-confirm:focus-visible {
+  outline: 2px solid var(--cyan-accent);
+  outline-offset: 3px;
+}

@@ -1,5 +1,6 @@
 import { state } from '../core/state.js';
 import { apiRequest } from '../core/api.js';
+import { showAppAlert } from '../core/alerts.js';
 
 export function initAuthView(navigateToAppCallback) {
   const loginForm = document.getElementById('login-form');
@@ -191,7 +192,11 @@ export function initAuthView(navigateToAppCallback) {
     } catch (error) {
       state.clearSession();
       console.error('Error al iniciar sesión:', error);
-      alert(error.message || 'No se pudo iniciar sesión.');
+      await showAppAlert({
+        icon: 'error',
+        title: 'No se pudo iniciar sesión',
+        text: error.message || 'Intenta verificar tus datos e inténtalo de nuevo.'
+      });
     } finally {
       if (btnLoginSubmit) btnLoginSubmit.disabled = false;
     }
@@ -206,7 +211,11 @@ export function initAuthView(navigateToAppCallback) {
     const photoFile = registerPhotoInput?.files?.[0];
 
     if (!name || !email || !password) {
-      alert('Por favor, llena todos los campos.');
+      await showAppAlert({
+        icon: 'warning',
+        title: 'Faltan datos',
+        text: 'Por favor, llena todos los campos.'
+      });
       return;
     }
 
@@ -217,7 +226,11 @@ export function initAuthView(navigateToAppCallback) {
         method: 'POST',
         body: JSON.stringify({ username: name, email, password, fotoPerfil })
       });
-      alert('Registro exitoso. Ahora puedes iniciar sesión.');
+      await showAppAlert({
+        icon: 'success',
+        title: 'Registro exitoso',
+        text: 'Ahora puedes iniciar sesión.'
+      });
       if (registerForm) registerForm.reset();
       if (registerPhotoImage) {
         registerPhotoImage.hidden = true;
@@ -229,7 +242,11 @@ export function initAuthView(navigateToAppCallback) {
       switchAuthScreen('login-screen');
     } catch (error) {
       console.error('Error de red o servidor:', error);
-      alert(error.message || 'Error al conectar con el servidor.');
+      await showAppAlert({
+        icon: 'error',
+        title: 'No se pudo completar el registro',
+        text: error.message || 'Error al conectar con el servidor.'
+      });
     } finally {
       if (btnRegisterSubmit) btnRegisterSubmit.disabled = false;
     }

@@ -1,18 +1,21 @@
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const fs = require('fs');
+const path = require('path');
 
 let serviceAccount;
 
 if (process.env.FIREBASE_CREDENTIALS) {
-  // En Vercel, lee exclusivamente desde la variable de entorno
   serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 } else {
-  // En local, intenta leer el archivo sin romper el servidor si no existe
-  try {
-    serviceAccount = require('../../firebase-key.json');
-  } catch (error) {
-    console.warn("Advertencia: No se encontró firebase-key.json localmente.");
+  const localCredentialsPath = path.join(__dirname, '..', '..', 'firebase-key.json');
+  if (fs.existsSync(localCredentialsPath)) {
+    serviceAccount = require(localCredentialsPath);
   }
+}
+
+if (!serviceAccount) {
+  throw new Error('Configura FIREBASE_CREDENTIALS o agrega firebase-key.json para conectar con Firebase.');
 }
 
 initializeApp({

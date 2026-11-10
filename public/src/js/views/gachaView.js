@@ -1,6 +1,7 @@
 import { state } from '../core/state.js';
 import { modalManager } from '../components/modalManager.js';
 import { apiRequest } from '../core/api.js';
+import { showAppAlert } from '../core/alerts.js';
 
 export function initGachaView() {
   const btnLaunch = document.getElementById('btn-launch');
@@ -25,7 +26,11 @@ export function initGachaView() {
         modalManager.openModal('no-points-modal');
       } else {
         console.error('Error al lanzar el gacha:', error);
-        alert(error.message || 'No se pudo realizar el lanzamiento. Intenta de nuevo.');
+        await showAppAlert({
+          icon: 'error',
+          title: 'No se pudo realizar el lanzamiento',
+          text: error.message || 'Intenta de nuevo.'
+        });
       }
       btnLaunch.disabled = false;
       return;

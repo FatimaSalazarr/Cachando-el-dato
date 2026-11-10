@@ -1,4 +1,10 @@
-<h2 class="screen-title">PERFIL</h2>
+<div class="profile-heading">
+  <h2 class="screen-title">PERFIL</h2>
+  <button class="btn-logout" id="btn-logout" type="button" aria-label="Cerrar sesión">
+    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+    <span>CERRAR SESIÓN</span>
+  </button>
+</div>
 <p id="profile-status" class="profile-status" role="status" aria-live="polite"></p>
 <div class="profile-card">
   <div class="avatar-ring">
@@ -6,7 +12,12 @@
     <img id="profile-avatar" alt="Foto de perfil" hidden>
   </div>
   <div class="user-details">
-    <h3 id="profile-user-name"></h3>
+    <div class="profile-name-row">
+      <h3 id="profile-user-name"></h3>
+      <button class="btn-edit-profile" id="btn-edit-profile" type="button" aria-label="Editar perfil" title="Editar perfil">
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+      </button>
+    </div>
     <p id="profile-user-email"></p>
     <span class="pts-accent"><i class="fa-solid fa-coins"></i> <span class="user-pts-display">0</span> pts</span>
   </div>
@@ -18,11 +29,6 @@
   <div class="stat-box"><span class="stat-val blue" id="profile-rare-count">0</span><span class="stat-lbl">RAROS</span></div>
   <div class="stat-box"><span class="stat-val gold" id="profile-legendary-count">0</span><span class="stat-lbl">LEGENDARIOS</span></div>
 </div>
-
-<button class="btn-primary btn-edit-profile" id="btn-edit-profile" type="button">
-  <i class="fa-solid fa-user-pen"></i> EDITAR PERFIL
-</button>
-<button class="btn-primary btn-logout" id="btn-logout">CERRAR SESIÓN</button>
 
 <div class="profile-edit-overlay hidden" id="profile-edit-modal" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
   <form class="profile-edit-card" id="profile-edit-form">

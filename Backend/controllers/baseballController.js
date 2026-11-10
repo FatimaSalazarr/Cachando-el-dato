@@ -46,7 +46,7 @@ const obtenerNoticias = async (_req, res) => {
   const apiKey = process.env.GNEWS_API_KEY;
   if (!apiKey) {
     return res.status(503).json({
-      error: 'Configura GNEWS_API_KEY en el archivo .env para activar las noticias.'
+      error: 'Configura GNEWS_API_KEY como variable de entorno (en .env local o en Vercel) para activar las noticias.'
     });
   }
 
