@@ -6,8 +6,18 @@
   margin-bottom: 16px;
 }
 
+#trivia-screen {
+  min-height: 0;
+}
+
+#trivia-screen > .screen-title {
+  flex: 0 0 auto;
+}
+
 .trivia-card.full-card {
-  flex: 1;
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
   background: var(--bg-card);
   border-radius: 20px;
   padding: 28px 22px;
