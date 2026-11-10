@@ -1,6 +1,7 @@
 import { triviaQuestions } from '../data/triviaQuestions.js';
 import { state } from '../core/state.js';
 import { apiRequest } from '../core/api.js';
+import { showAppAlert } from '../core/alerts.js';
 
 const kahootColors = ['red', 'blue', 'yellow', 'green'];
 const kahootIcons = ['fa-caret-up', 'fa-diamond', 'fa-circle', 'fa-square'];
@@ -123,7 +124,11 @@ async function selectOption(selectedIndex, correctIndex) {
       state.setPoints(result.puntos);
     } catch (error) {
       console.error('Error al guardar los puntos de trivia:', error);
-      alert(error.message || 'No se pudieron guardar los puntos de trivia.');
+      await showAppAlert({
+        icon: 'error',
+        title: 'No se pudieron guardar los puntos',
+        text: error.message || 'Intenta de nuevo.'
+      });
     }
   }
 

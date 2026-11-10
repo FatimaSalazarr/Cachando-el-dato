@@ -513,6 +513,11 @@ function abrirEscenaAR() {
         if (team) {
           detectedTeamKey = teamKey;
           state.setSelectedTeam(teamKey);
+          const model = targetEntity.querySelector('a-gltf-model');
+          if (model) {
+            model.setAttribute('visible', true);
+            if (model.getObject3D('mesh')) fitARModel(model);
+          }
           if (titleEl) titleEl.textContent = team.name;
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
           updateCaptureButtons();

@@ -1,4 +1,38 @@
 /* PERFIL */
+.profile-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profile-heading .screen-title {
+  margin: 0;
+}
+
+.btn-logout {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: rgba(15, 35, 64, 0.82);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-bebas);
+  font-size: 13px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.btn-logout:hover {
+  color: #fff;
+  border-color: var(--cyan-accent);
+}
+
 .profile-card {
   background: var(--bg-card);
   border-radius: 16px;
@@ -8,11 +42,15 @@
   gap: 16px;
   margin-bottom: 16px;
   border: 1px solid var(--border-subtle);
+  min-width: 0;
 }
 
 .avatar-ring {
   width: 60px;
   height: 60px;
+  flex: 0 0 60px;
+  position: relative;
+  overflow: hidden;
   border-radius: 50%;
   border: 2px solid var(--cyan-accent);
   display: flex;
@@ -24,20 +62,60 @@
 }
 
 .avatar-ring img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-ring img[hidden] {
+  display: none;
+}
+
+.avatar-ring #profile-avatar-fallback {
+  position: absolute;
+}
+
+.user-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .user-details h3 {
   font-family: var(--font-bebas);
   color: var(--text-primary);
   font-size: 22px;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .user-details p {
   color: var(--text-secondary);
   font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.btn-edit-profile {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--cyan-accent);
+  cursor: pointer;
+}
+
+.btn-edit-profile:hover {
+  background: rgba(56, 189, 248, 0.24);
+  color: #fff;
 }
 
 .pts-accent {
@@ -76,22 +154,6 @@
   font-size: 11px;
   color: var(--text-secondary);
   margin-top: 4px;
-}
-
-.btn-logout { 
-  height: 48px; 
-  font-size: 18px; 
-  margin: 0 auto 18px auto; 
-  width: 220px; 
-  align-self: center; 
-}
-
-.btn-edit-profile {
-  display: block;
-  width: min(100%, 260px);
-  height: 44px;
-  margin: 0 auto 10px;
-  font-size: 17px;
 }
 
 .profile-edit-overlay {

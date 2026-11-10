@@ -8,6 +8,7 @@
 @import "./components/bottom-nav.css";
 @import "./components/cards.css";
 @import "./components/modals.css";
+@import "./components/alerts.css";
 
 /* VISTAS */
 @import "./views/home.css";

@@ -1,14 +1,15 @@
 /* ESCÁNER REALIDAD AUMENTADA */
 .camera-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
   background-color: #000;
-  z-index: 100;
+  z-index: 2000;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 #ar-camera-feed {
@@ -374,21 +375,34 @@
 .ar-review-actions button:disabled { opacity: 0.55; cursor: wait; }
 
 .ar-overlay-content {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 10;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 40px 20px 30px 20px;
-  background: linear-gradient(180deg, rgba(11,25,46,0.4) 0%, rgba(11,25,46,0.85) 100%);
+  padding: calc(env(safe-area-inset-top) + 56px) 12px calc(env(safe-area-inset-bottom) + 12px);
+  pointer-events: none;
+}
+
+.ar-overlay-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 360px);
+  pointer-events: auto;
 }
 
 #ar-3d-container {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -411,15 +425,15 @@
 
 .ar-action-buttons {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .cube-btn-green {
-  width: 80px;
-  height: 68px;
+  width: 58px;
+  height: 48px;
   background: var(--green-gradient);
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -435,45 +449,75 @@
 }
 
 .cube-btn-green i {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .cube-btn-green span {
   font-family: var(--font-bebas);
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .ar-reduced-info-card {
   width: 100%;
-  background: rgba(23,48,88,0.92);
+  background: rgba(11, 25, 46, 0.78);
   border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 9px 12px;
+  backdrop-filter: blur(8px);
 }
 
 .ar-reduced-info-card h3 {
   font-family: var(--font-bebas);
-  font-size: 24px;
+  font-size: 19px;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .ar-reduced-info-card p {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .btn-red-ver-mas {
-  width: 100%;
-  height: 50px;
+  width: auto;
+  min-height: 36px;
+  padding: 0 20px;
   background: var(--blue-gradient);
   border: none;
-  border-radius: 14px;
+  border-radius: 999px;
   color: #fff;
   font-family: var(--font-bebas);
-  font-size: 22px;
+  font-size: 16px;
   cursor: pointer;
-  box-shadow: var(--shadow-glow-cyan);
+  box-shadow: 0 4px 14px rgba(0, 114, 255, 0.28);
+}
+
+.ar-live-filters {
+  width: 100%;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ar-live-filters::-webkit-scrollbar { display: none; }
+
+.btn-camera-capture {
+  width: 52px;
+  min-height: 52px;
+  padding: 0;
+  border-width: 2px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.btn-camera-capture span { display: none; }
+
+.ar-capture-status {
+  max-width: 100%;
+  padding: 6px 10px;
+  font-size: 11px;
+  backdrop-filter: blur(8px);
 }
 
 /* Estilos del Modal de Ayuda AR */

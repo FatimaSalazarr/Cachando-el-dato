@@ -38,7 +38,7 @@ const uploadMedia = async (file, teamKey, mimeType, destination) => {
   const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
   if (!bucketName) {
     if (process.env.VERCEL) {
-      const error = new Error('Configura FIREBASE_STORAGE_BUCKET con el nombre del bucket de Firebase Storage.');
+      const error = new Error('Configura FIREBASE_STORAGE_BUCKET como variable de entorno con el nombre del bucket de Firebase Storage.');
       error.status = 503;
       throw error;
     }
