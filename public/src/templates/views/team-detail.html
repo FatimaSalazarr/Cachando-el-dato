@@ -27,6 +27,17 @@
 
 <div class="gallery-section">
   <p class="modal-subheading"><i class="fa-solid fa-images"></i> GALERÍA DEL ESTADIO</p>
+  <p class="team-feed-subtitle">Comparte tus fotos y videos del estadio en esta galería.</p>
+  <div class="team-gallery-actions">
+    <button class="team-feed-upload" id="btn-team-gallery-upload" type="button">
+      <i class="fa-solid fa-cloud-arrow-up"></i> SUBIR FOTO O VIDEO
+    </button>
+    <input id="team-gallery-file" class="team-feed-file-input" type="file" hidden
+      accept="image/jpeg,image/png,image/webp,video/mp4,video/webm">
+    <input id="team-gallery-caption-input" class="team-feed-caption-input" type="text"
+      maxlength="180" placeholder="Agrega una descripción (opcional)" aria-label="Descripción de la foto o video">
+  </div>
+  <p id="team-gallery-status" class="team-feed-status" role="status" aria-live="polite"></p>
   <div id="detail-stadium-gallery" class="modal-gallery-grid"></div>
 </div>
 
@@ -34,9 +45,11 @@
   <div class="team-feed-heading">
     <div>
       <p class="modal-subheading" id="team-feed-title"><i class="fa-solid fa-users"></i> MOMENTOS DE LA AFICIÓN</p>
-      <p class="team-feed-subtitle">Fotos y videos compartidos durante el escaneo de este equipo.</p>
+      <p class="team-feed-subtitle">Capturas compartidas automáticamente desde el escáner.</p>
     </div>
-    <span class="team-feed-live"><i class="fa-solid fa-circle"></i> FEED</span>
+    <button class="team-feed-refresh" id="btn-refresh-team-feed" type="button" aria-label="Actualizar publicaciones">
+      <i class="fa-solid fa-rotate"></i>
+    </button>
   </div>
   <p id="team-feed-status" class="team-feed-status" role="status" aria-live="polite"></p>
   <div id="team-fan-feed-grid" class="team-fan-feed-grid"></div>
@@ -69,7 +82,7 @@
   </div>
 </div>
 
-<p class="modal-subheading"><i class="fa-solid fa-id-badge"></i> PLANTILLA Y CUERPO TÉCNICO</p>
+<p class="modal-subheading"><i class="fa-solid fa-id-badge"></i> CUERPO TÉCNICO</p>
 <div class="info-group full-width manager-box">
   <div class="manager-avatar"><i class="fa-solid fa-user-tie"></i></div>
   <div class="manager-details">
@@ -79,7 +92,8 @@
 </div>
 
 <div class="roster-container">
-  <p class="modal-subheading" style="margin-bottom: 10px;"><i class="fa-solid fa-baseball-bat-ball"></i> JUGADORES DESTACADOS</p>
+  <p class="modal-subheading roster-heading"><i class="fa-solid fa-baseball-bat-ball"></i> JUGADORES DESTACADOS</p>
+  <p class="roster-caption">Conoce algunos nombres de cada equipo.</p>
   <div id="detail-team-roster" class="roster-grid"></div>
 </div>
 

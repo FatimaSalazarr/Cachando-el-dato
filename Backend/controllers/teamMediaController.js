@@ -34,7 +34,7 @@ const removeUploadedFile = async (filePath) => {
   }
 };
 
-const uploadMedia = async (file, teamKey, mimeType) => {
+const uploadMedia = async (file, teamKey, mimeType, destination) => {
   const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
   if (!bucketName) {
     if (process.env.VERCEL) {
@@ -50,7 +50,7 @@ const uploadMedia = async (file, teamKey, mimeType) => {
   }
 
   const bucket = getStorage().bucket(bucketName);
-  const storagePath = `team-feed/${teamKey}/${crypto.randomUUID()}${FILE_EXTENSIONS[mimeType]}`;
+  const storagePath = `${destination}/${teamKey}/${crypto.randomUUID()}${FILE_EXTENSIONS[mimeType]}`;
   const downloadToken = crypto.randomUUID();
   const storageFile = bucket.file(storagePath);
   await pipeline(
@@ -123,14 +123,14 @@ const serializarPublicacion = (doc) => {
   };
 };
 
-const obtenerFeedEquipo = async (req, res) => {
+const obtenerMediaEquipo = async (req, res, collectionName, errorLabel) => {
   const { teamKey } = req.params;
   if (!TEAM_KEYS.has(teamKey)) {
     return res.status(404).json({ error: 'Equipo no encontrado.' });
   }
 
   try {
-    const snapshot = await db.collection('teamFeed')
+    const snapshot = await db.collection(collectionName)
       .doc(teamKey)
       .collection('publicaciones')
       .orderBy('createdAt', 'desc')
@@ -140,12 +140,15 @@ const obtenerFeedEquipo = async (req, res) => {
 
     return res.json({ publicaciones });
   } catch (error) {
-    console.error('Error al cargar el feed del equipo:', error);
-    return res.status(500).json({ error: 'No se pudo cargar el feed del equipo.' });
+    console.error(`Error al cargar ${errorLabel}:`, error);
+    return res.status(500).json({ error: `No se pudo cargar ${errorLabel}.` });
   }
 };
 
-const publicarMediaEquipo = async (req, res) => {
+const obtenerFeedEquipo = (req, res) => obtenerMediaEquipo(req, res, 'teamFeed', 'el feed del equipo');
+const obtenerGaleriaEquipo = (req, res) => obtenerMediaEquipo(req, res, 'teamGallery', 'la galería del equipo');
+
+const publicarMediaEnColeccion = async (req, res, collectionName, destination, errorLabel) => {
   const { teamKey } = req.params;
   const file = req.file;
 
@@ -169,13 +172,13 @@ const publicarMediaEquipo = async (req, res) => {
       ? req.body.filter
       : 'none';
     const mimeType = normalizeMimeType(file.mimetype);
-    const storedMedia = await uploadMedia(file, teamKey, mimeType);
+    const storedMedia = await uploadMedia(file, teamKey, mimeType, destination);
     storagePath = storedMedia.storagePath;
     await removeUploadedFile(file.path);
     const userDoc = await db.collection('usuarios').doc(req.usuario.id).get();
     const username = userDoc.exists ? userDoc.data().username : 'Aficionado';
     const mediaUrl = storedMedia.mediaUrl;
-    const publicationRef = await db.collection('teamFeed')
+    const publicationRef = await db.collection(collectionName)
       .doc(teamKey)
       .collection('publicaciones')
       .add({
@@ -209,9 +212,20 @@ const publicarMediaEquipo = async (req, res) => {
     if (error.status === 503) {
       return res.status(503).json({ error: error.message });
     }
-    console.error('Error al publicar media del equipo:', error);
-    return res.status(500).json({ error: 'No se pudo publicar el archivo en el feed.' });
+    console.error(`Error al publicar media en ${errorLabel}:`, error);
+    return res.status(500).json({ error: `No se pudo publicar el archivo en ${errorLabel}.` });
   }
 };
 
-module.exports = { obtenerFeedEquipo, publicarMediaEquipo, validarEquipoFeed };
+const publicarMediaEquipo = (req, res) =>
+  publicarMediaEnColeccion(req, res, 'teamFeed', 'team-feed', 'el feed del equipo');
+const publicarMediaGaleria = (req, res) =>
+  publicarMediaEnColeccion(req, res, 'teamGallery', 'team-gallery', 'la galería del equipo');
+
+module.exports = {
+  obtenerFeedEquipo,
+  obtenerGaleriaEquipo,
+  publicarMediaEquipo,
+  publicarMediaGaleria,
+  validarEquipoFeed
+};

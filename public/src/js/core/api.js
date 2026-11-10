@@ -1,10 +1,10 @@
 import { state } from './state.js';
 
 export async function apiRequest(path, options = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers
-  };
+  const headers = { ...options.headers };
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+  }
 
   if (state.currentUser.token) {
     headers.Authorization = `Bearer ${state.currentUser.token}`;

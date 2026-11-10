@@ -1,16 +1,19 @@
 import { teamsData } from '../data/teamsData.js';
 import { state } from '../core/state.js';
+import { apiRequest } from '../core/api.js';
 
 
 let isSpinning = false;
 let eventosAgregados = false; 
 let detectedTeamKey = null;
 let openTeamDetailCallback = null;
-let pendingCapture = null;
-let previewObjectUrl = null;
 let recordingSession = null;
 let activeFilter = 'none';
 let modelEventsAdded = false;
+let capturePressTimer = null;
+let captureGestureRecording = false;
+let isCapturingPhoto = false;
+let isUploadingCapture = false;
 
 const CAPTURE_FILTERS = {
   none: 'none',
@@ -26,13 +29,7 @@ export function initARView(onOpenFullInfoCallback) {
   const btnSpin = document.getElementById('btn-ar-spin');
   const btnConfetti = document.getElementById('btn-ar-confetti');
   const btnCapture = document.getElementById('btn-camera-capture');
-  const btnRecord = document.getElementById('btn-video-record');
   const btnMoreInfo = document.getElementById('btn-ar-more-info');
-  const review = document.getElementById('ar-capture-review');
-  const reviewClose = document.getElementById('ar-review-close');
-  const reviewCancel = document.getElementById('ar-review-cancel');
-  const reviewUpload = document.getElementById('ar-review-upload');
-  const filterButtons = document.querySelectorAll('.ar-review-filter, .ar-live-filter');
 
   // Referencias para el modal de ayuda nuevo
   const btnHelp = document.getElementById('btn-ar-help');
@@ -43,8 +40,43 @@ export function initARView(onOpenFullInfoCallback) {
   if (btnClose) btnClose.onclick = () => closeARView();
   if (btnSpin) btnSpin.onclick = () => toggleModelSpin();
   if (btnConfetti) btnConfetti.onclick = () => triggerConfetti();
-  if (btnCapture) btnCapture.onclick = () => takePhoto();
-  if (btnRecord) btnRecord.onclick = () => toggleVideoRecording();
+  if (btnCapture) {
+    btnCapture.onpointerdown = (event) => {
+      if (btnCapture.disabled) return;
+      event.preventDefault();
+      if (typeof btnCapture.setPointerCapture === 'function') {
+        btnCapture.setPointerCapture(event.pointerId);
+      }
+      captureGestureRecording = false;
+      capturePressTimer = window.setTimeout(() => {
+        captureGestureRecording = true;
+        startVideoRecording();
+      }, 280);
+    };
+    btnCapture.onpointerup = (event) => {
+      event.preventDefault();
+      if (capturePressTimer) window.clearTimeout(capturePressTimer);
+      capturePressTimer = null;
+      if (recordingSession) {
+        stopVideoRecording();
+      } else if (!captureGestureRecording) {
+        takePhoto();
+      }
+      captureGestureRecording = false;
+    };
+    btnCapture.onpointercancel = () => {
+      if (capturePressTimer) window.clearTimeout(capturePressTimer);
+      capturePressTimer = null;
+      captureGestureRecording = true;
+      if (recordingSession) stopVideoRecording();
+    };
+    btnCapture.onclick = (event) => {
+      if (event.detail === 0 && !btnCapture.disabled) takePhoto();
+    };
+  }
+  document.querySelectorAll('.ar-live-filter').forEach((button) => {
+    button.onclick = () => selectCaptureFilter(button.dataset.filter || 'none');
+  });
   if (btnMoreInfo) {
     btnMoreInfo.onclick = () => {
       closeARView();
@@ -53,18 +85,6 @@ export function initARView(onOpenFullInfoCallback) {
       }
     };
   }
-
-  if (reviewClose) reviewClose.onclick = discardCapture;
-  if (reviewCancel) reviewCancel.onclick = discardCapture;
-  if (review) {
-    review.onclick = (event) => {
-      if (event.target === review) discardCapture();
-    };
-  }
-  if (reviewUpload) reviewUpload.onclick = () => publishCapture();
-  filterButtons.forEach((button) => {
-    button.onclick = () => selectCaptureFilter(button.dataset.filter || 'none');
-  });
 
   // Eventos del Modal de Ayuda agregado
   if (btnHelp && arHelpModal) {
@@ -96,6 +116,11 @@ export async function takePhoto() {
     setCaptureStatus('Primero apunta al logo de un equipo.');
     return;
   }
+  if (isUploadingCapture || isCapturingPhoto) return;
+  const teamKey = detectedTeamKey;
+  const filter = activeFilter;
+  isCapturingPhoto = true;
+  updateCaptureButtons();
   try {
     const video = getCameraVideo();
     const canvas = makeCaptureCanvas(video);
@@ -104,29 +129,27 @@ export async function takePhoto() {
     const photo = await new Promise((resolve, reject) => {
       canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('No se pudo procesar la foto.')), 'image/jpeg', 0.9);
     });
-    showCaptureReview(photo, 'image', detectedTeamKey);
+    await publishCapture(photo, 'image', teamKey, filter);
   } catch (error) {
     console.error('Error al tomar la foto:', error);
     setCaptureStatus(error.message || 'No se pudo tomar la foto.');
+  } finally {
+    isCapturingPhoto = false;
+    updateCaptureButtons();
   }
-}
-
-function toggleVideoRecording() {
-  if (recordingSession) {
-    stopVideoRecording();
-    return;
-  }
-  startVideoRecording();
 }
 
 async function startVideoRecording() {
-  if (!detectedTeamKey) {
+  if (!detectedTeamKey || isUploadingCapture || isCapturingPhoto || recordingSession) {
     setCaptureStatus('Primero apunta al logo de un equipo.');
     return;
   }
 
   let stream;
   try {
+    if (typeof window.MediaRecorder !== 'function') {
+      throw new Error('Este dispositivo no permite grabar video desde el escáner.');
+    }
     const video = getCameraVideo();
     const canvas = makeCaptureCanvas(video);
     stream = canvas.captureStream(24);
@@ -164,9 +187,9 @@ async function startVideoRecording() {
       session.frameId = requestAnimationFrame(draw);
     };
     draw();
-    session.timeoutId = window.setTimeout(stopVideoRecording, 20000);
+    session.timeoutId = window.setTimeout(stopVideoRecording, 15000);
     updateCaptureButtons();
-    setCaptureStatus('Grabando… máximo 20 segundos.');
+    setCaptureStatus('Grabando video… suelta para publicar (máximo 15 segundos).');
   } catch (error) {
     stream?.getTracks().forEach((track) => track.stop());
     console.error('Error al iniciar la grabación:', error);
@@ -194,8 +217,8 @@ function finishVideoRecording(session) {
     setCaptureStatus('No se guardó ningún video.');
     return;
   }
-  setCaptureStatus('Video listo para revisar.');
-  showCaptureReview(blob, 'video', session.teamKey, session.filter);
+  setCaptureStatus('Subiendo video…');
+  publishCapture(blob, 'video', session.teamKey, session.filter);
 }
 
 function makeCaptureCanvas(video) {
@@ -235,98 +258,27 @@ function drawARFrame(context, canvas, video, filter = 'none') {
   if (filter === 'sparkles') drawSparkles(context, canvas.width, canvas.height);
 }
 
-function showCaptureReview(blob, type, teamKey, filter = activeFilter) {
-  pendingCapture = { blob, type, teamKey, filter };
-  activeFilter = filter;
-  const review = document.getElementById('ar-capture-review');
-  const preview = document.getElementById('ar-review-preview');
-  const teamLabel = document.getElementById('ar-review-team');
-  const caption = document.getElementById('ar-review-caption');
-  if (!review || !preview) return;
-
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = URL.createObjectURL(blob);
-  preview.innerHTML = '';
-  preview.classList.remove('filter-sparkles');
-
-  const media = type === 'video' ? document.createElement('video') : document.createElement('img');
-  media.id = 'ar-capture-preview-media';
-  media.src = previewObjectUrl;
-  if (type === 'video') {
-    media.controls = true;
-    media.playsInline = true;
-  } else {
-    media.alt = `Foto de ${teamsData[teamKey]?.name || 'equipo detectado'}`;
-  }
-  preview.appendChild(media);
-  if (teamLabel) teamLabel.textContent = teamsData[teamKey]?.name || 'Equipo detectado';
-  if (caption) caption.value = '';
-  const filterHint = document.getElementById('ar-review-filter-hint');
-  if (filterHint) {
-    filterHint.textContent = type === 'video'
-      ? 'El filtro seleccionado se aplicó al grabar el video.'
-      : 'El filtro se aplicará a la foto antes de publicarla.';
-  }
-  document.querySelectorAll('.ar-review-filter').forEach((button) => {
-    button.disabled = type === 'video';
-  });
-  document.querySelectorAll('.ar-live-filter').forEach((button) => {
-    button.disabled = type === 'video';
-  });
-  document.getElementById('ar-review-status').textContent = '';
-  selectCaptureFilter(filter, true);
-  review.classList.remove('hidden');
-}
-
-function selectCaptureFilter(filter, force = false) {
+function selectCaptureFilter(filter) {
   if (!Object.hasOwn(CAPTURE_FILTERS, filter)) return;
-  if (pendingCapture?.type === 'video' && !force) return;
   activeFilter = filter;
-  document.querySelectorAll('.ar-review-filter, .ar-live-filter').forEach((button) => {
+  document.querySelectorAll('.ar-live-filter').forEach((button) => {
     button.classList.toggle('active', button.dataset.filter === filter);
   });
 
-  const preview = document.getElementById('ar-review-preview');
-  const media = document.getElementById('ar-capture-preview-media');
-  if (preview) preview.classList.toggle('filter-sparkles', filter === 'sparkles' && pendingCapture?.type !== 'video');
   const scanner = document.getElementById('ar-3d-container');
   if (scanner) {
     scanner.classList.remove('capture-filter-blur', 'capture-filter-thermal', 'capture-filter-saturate', 'capture-filter-sparkles');
     if (filter !== 'none') scanner.classList.add(`capture-filter-${filter}`);
   }
-  if (media && pendingCapture?.type !== 'video') {
-    media.classList.remove('filter-blur', 'filter-thermal', 'filter-saturate', 'filter-sparkles');
-    if (filter !== 'none') media.classList.add(`filter-${filter}`);
-  }
 }
 
-function discardCapture() {
-  pendingCapture = null;
-  document.querySelectorAll('.ar-review-filter, .ar-live-filter').forEach((button) => {
-    button.disabled = false;
-  });
-  const review = document.getElementById('ar-capture-review');
-  if (review) review.classList.add('hidden');
-  const preview = document.getElementById('ar-review-preview');
-  if (preview) preview.innerHTML = '';
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = null;
-  setCaptureStatus(detectedTeamKey ? 'Equipo reconocido. Ya puedes capturar otro momento.' : 'Reconoce un equipo para activar la captura.');
-}
-
-async function publishCapture() {
-  if (!pendingCapture) return;
-  const uploadButton = document.getElementById('ar-review-upload');
-  const status = document.getElementById('ar-review-status');
-  const teamKey = pendingCapture.teamKey;
-  const filter = pendingCapture.type === 'video' ? pendingCapture.filter : activeFilter;
-  if (uploadButton) uploadButton.disabled = true;
-  if (status) status.textContent = 'Preparando y subiendo…';
+async function publishCapture(blob, type, teamKey, filter) {
+  isUploadingCapture = true;
+  updateCaptureButtons();
+  setCaptureStatus(type === 'image' ? 'Preparando y publicando tu foto…' : 'Publicando tu video…');
 
   try {
-    const filteredBlob = pendingCapture.type === 'image'
-      ? await createFilteredPhoto(pendingCapture.blob, filter)
-      : pendingCapture.blob;
+    const filteredBlob = type === 'image' ? await createFilteredPhoto(blob, filter) : blob;
     if (filteredBlob.size > 20 * 1024 * 1024) {
       throw new Error('El archivo supera los 20 MB. Graba un video más corto.');
     }
@@ -336,24 +288,24 @@ async function publishCapture() {
     const uploadBlob = new Blob([filteredBlob], { type: mimeType });
     formData.append('media', uploadBlob, makeUploadFilename(mimeType));
     formData.append('filter', filter);
-    formData.append('caption', document.getElementById('ar-review-caption')?.value || '');
+    formData.append('caption', '');
 
-    const response = await fetch(`/api/game/team-feed/${encodeURIComponent(teamKey)}`, {
+    await apiRequest(`/game/team-feed/${encodeURIComponent(teamKey)}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${state.currentUser.token}` },
       body: formData
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'No se pudo publicar el archivo.');
-
-    discardCapture();
-    closeARView();
-    if (openTeamDetailCallback) openTeamDetailCallback(teamKey);
+    setCaptureStatus(type === 'image'
+      ? '¡Foto publicada en Momentos de la afición!'
+      : '¡Video publicado en Momentos de la afición!');
   } catch (error) {
     console.error('Error al publicar la captura:', error);
-    if (status) status.textContent = error.message || 'No se pudo subir el archivo.';
+    setCaptureStatus(error.status === 401
+      ? 'Inicia sesión para publicar capturas en Momentos de la afición.'
+      : error.message || 'No se pudo subir el archivo.');
   } finally {
-    if (uploadButton) uploadButton.disabled = false;
+    isUploadingCapture = false;
+    updateCaptureButtons();
   }
 }
 
@@ -420,19 +372,19 @@ function setCaptureStatus(message) {
 
 function updateCaptureButtons() {
   const captureButton = document.getElementById('btn-camera-capture');
-  const recordButton = document.getElementById('btn-video-record');
   const isRecording = Boolean(recordingSession);
   document.querySelectorAll('.ar-live-filter').forEach((button) => {
-    button.disabled = isRecording || pendingCapture?.type === 'video';
+    button.disabled = isRecording || isCapturingPhoto || isUploadingCapture;
   });
-  if (captureButton) captureButton.disabled = !detectedTeamKey || isRecording;
-  if (recordButton) {
-    recordButton.disabled = !detectedTeamKey;
-    recordButton.classList.toggle('recording', isRecording);
-    recordButton.innerHTML = isRecording
-      ? '<i class="fa-solid fa-stop"></i><span>DETENER</span>'
-      : '<i class="fa-solid fa-video"></i><span>GRABAR</span>';
-    recordButton.setAttribute('aria-label', isRecording ? 'Detener grabación' : 'Grabar video del equipo detectado');
+  if (captureButton) {
+    captureButton.disabled = !detectedTeamKey || isUploadingCapture || isCapturingPhoto;
+    captureButton.classList.toggle('recording', isRecording);
+    captureButton.innerHTML = isRecording
+      ? '<i class="fa-solid fa-circle"></i><span>SUELTA PARA PUBLICAR</span>'
+      : '<i class="fa-solid fa-camera"></i><span>TOCA: FOTO · MANTÉN: VIDEO</span>';
+    captureButton.setAttribute('aria-label', isRecording
+      ? 'Grabando video. Suelta el botón para publicar.'
+      : 'Toca para tomar una foto o mantén presionado para grabar video.');
   }
 }
 
@@ -440,7 +392,7 @@ export function openScannerView() {
   const detectedContent = document.getElementById('ar-detected-content');
   const modal = document.getElementById('ar-experience-modal');
   detectedTeamKey = null;
-  selectCaptureFilter('none', true);
+  selectCaptureFilter('none');
   updateCaptureButtons();
   setCaptureStatus('Reconoce un equipo para activar la captura.');
   if (detectedContent) detectedContent.classList.remove('hidden');
@@ -464,7 +416,7 @@ export function openVRDirectly(teamKey) {
   if (modal) modal.classList.remove('hidden');
 
   updateCaptureButtons();
-  setCaptureStatus(`Equipo listo: ${team.name}. Toma una foto o graba un video.`);
+  setCaptureStatus(`Equipo listo: ${team.name}. Toca para foto o mantén para video.`);
   abrirEscenaAR();
   if (titleEl) titleEl.textContent = team.name;
   if (summaryEl) summaryEl.textContent = `${team.city} · ${team.stadium}`;
@@ -475,7 +427,9 @@ export function closeARView() {
     recordingSession.discard = true;
     stopVideoRecording();
   }
-  discardCapture();
+  if (capturePressTimer) window.clearTimeout(capturePressTimer);
+  capturePressTimer = null;
+  captureGestureRecording = false;
   const sceneEl = document.querySelector('a-scene');
   const mindarSystem = sceneEl?.systems?.['mindar-image-system'];
   const cameraTracks = mindarSystem?.video?.srcObject?.getTracks?.() || [];
