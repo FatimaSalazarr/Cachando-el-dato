@@ -1,5 +1,7 @@
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { JWT } = require('google-auth-library');
+const { Storage } = require('@google-cloud/storage');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,8 +21,18 @@ if (!serviceAccount) {
 }
 
 initializeApp({
-  credential: cert(serviceAccount)
+  credential: cert(serviceAccount),
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET
 });
 
 const db = getFirestore();
-module.exports = { db, FieldValue };
+const storage = new Storage({
+  projectId: serviceAccount.project_id,
+  authClient: new JWT({
+    email: serviceAccount.client_email,
+    key: serviceAccount.private_key,
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+  })
+});
+
+module.exports = { db, FieldValue, storage };

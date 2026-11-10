@@ -218,7 +218,8 @@ async function loadTeamGallery(teamKey) {
       const media = {
         type: post.type === 'video' ? 'video' : 'image',
         src: post.mediaUrl,
-        caption: post.caption || ''
+        caption: post.caption || '',
+        downloadPath: `/game/team-media/gallery/${encodeURIComponent(teamKey)}/${encodeURIComponent(post.id)}/download`
       };
       remoteGalleryItems.push(media);
       currentGalleryList.push(media);
@@ -341,7 +342,8 @@ async function renderTeamFanFeed(teamKey) {
     publicaciones.forEach((post) => {
       const media = {
         type: post.type === 'video' ? 'video' : 'image',
-        src: post.mediaUrl
+        src: post.mediaUrl,
+        downloadPath: `/game/team-media/feed/${encodeURIComponent(teamKey)}/${encodeURIComponent(post.id)}/download`
       };
       const mediaIndex = currentGalleryList.push(media) - 1;
       const card = document.createElement('article');
@@ -535,6 +537,7 @@ function setupFullscreenModalEvents() {
   const modal = document.getElementById('media-fullscreen-modal');
   const closeBtn = document.getElementById('mfm-close-btn');
   const saveBtn = document.getElementById('mfm-save-btn');
+  const saveStatus = document.getElementById('mfm-save-status');
   const prevBtn = document.getElementById('mfm-prev-btn');
   const nextBtn = document.getElementById('mfm-next-btn');
   const filterButtons = document.querySelectorAll('.mfm-filter-circle');
@@ -577,10 +580,28 @@ function setupFullscreenModalEvents() {
   });
 
   if (saveBtn) {
-    saveBtn.onclick = () => {
-      modal.style.display = 'none';
-      if (successModal) {
-        successModal.style.display = 'flex';
+    saveBtn.onclick = async () => {
+      const media = currentGalleryList[currentIndex];
+      if (!media || saveBtn.disabled) return;
+
+      saveBtn.disabled = true;
+      saveBtn.setAttribute('aria-busy', 'true');
+      if (saveStatus) saveStatus.textContent = 'Preparando la descarga…';
+      try {
+        const blob = await createDownloadBlob(media, currentAppliedFilter);
+        const extension = media.type === 'video' ? getVideoExtension(blob.type) : 'jpg';
+        downloadBlob(blob, `cachando-el-dato-${Date.now()}.${extension}`);
+        if (modal) modal.style.display = 'none';
+        if (saveStatus) saveStatus.textContent = '';
+        if (successModal) successModal.style.display = 'flex';
+      } catch (error) {
+        console.error('Error al descargar el archivo multimedia:', error);
+        if (saveStatus) {
+          saveStatus.textContent = error.message || 'No se pudo descargar el archivo. Intenta de nuevo.';
+        }
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.removeAttribute('aria-busy');
       }
     };
   }
@@ -596,6 +617,200 @@ function setupFullscreenModalEvents() {
       if (e.target === successModal) successModal.style.display = 'none';
     };
   }
+}
+
+async function createDownloadBlob(media, filter) {
+  const sourceBlob = await fetchMediaBlob(media);
+  if (media.type === 'video') {
+    return createFilteredVideoBlob(sourceBlob, filter);
+  }
+
+  const image = await createImageBitmap(sourceBlob);
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    if (!canvas.width || !canvas.height || !context) {
+      throw new Error('No se pudo preparar la foto para descargarla.');
+    }
+
+    const canvasFilters = {
+      none: 'none',
+      blur: 'blur(6px)',
+      sparkles: 'none',
+      thermal: 'hue-rotate(180deg) saturate(350%) invert(15%)',
+      saturate: 'saturate(500%)'
+    };
+    context.filter = canvasFilters[filter] || 'none';
+    context.drawImage(image, 0, 0);
+    context.filter = 'none';
+    if (filter === 'sparkles') drawDownloadSparkles(context, canvas.width, canvas.height);
+
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error('No se pudo generar la foto para descargarla.')),
+        'image/jpeg',
+        0.92
+      );
+    });
+  } finally {
+    image.close();
+  }
+}
+
+async function fetchMediaBlob(media) {
+  const url = media.downloadPath ? `/api${media.downloadPath}` : media.src;
+  const headers = media.downloadPath && state.currentUser.token
+    ? { Authorization: `Bearer ${state.currentUser.token}` }
+    : {};
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    let message = 'No se pudo obtener el archivo para descargarlo.';
+    try {
+      const result = await response.json();
+      if (result.error) message = result.error;
+    } catch (error) {
+      console.error('No se pudo leer el error de descarga:', error);
+    }
+    throw new Error(message);
+  }
+  return response.blob();
+}
+
+async function createFilteredVideoBlob(sourceBlob, filter) {
+  if (typeof MediaRecorder !== 'function') {
+    throw new Error('Este dispositivo no permite descargar videos con filtros aplicados.');
+  }
+
+  const sourceUrl = URL.createObjectURL(sourceBlob);
+  const video = document.createElement('video');
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.src = sourceUrl;
+
+  try {
+    await new Promise((resolve, reject) => {
+      video.addEventListener('loadedmetadata', resolve, { once: true });
+      video.addEventListener('error', () => reject(new Error('No se pudo cargar el video para aplicarle el filtro.')), { once: true });
+      video.load();
+    });
+    if (!video.videoWidth || !video.videoHeight) {
+      throw new Error('El video no tiene dimensiones válidas.');
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    if (!context || typeof canvas.captureStream !== 'function') {
+      throw new Error('Este dispositivo no permite procesar videos con filtros.');
+    }
+
+    const mimeType = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/mp4']
+      .find((type) => MediaRecorder.isTypeSupported(type));
+    const stream = canvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+    const chunks = [];
+    const canvasFilters = {
+      none: 'none',
+      blur: 'blur(6px)',
+      sparkles: 'none',
+      thermal: 'hue-rotate(180deg) saturate(350%) invert(15%)',
+      saturate: 'saturate(500%)'
+    };
+
+    const drawFrame = () => {
+      if (recorder.state !== 'recording') return;
+      context.filter = canvasFilters[filter] || 'none';
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      context.filter = 'none';
+      if (filter === 'sparkles') drawDownloadSparkles(context, canvas.width, canvas.height);
+      requestAnimationFrame(drawFrame);
+    };
+
+    return await new Promise((resolve, reject) => {
+      let settled = false;
+      const stopStream = () => stream.getTracks().forEach((track) => track.stop());
+      const fail = (error) => {
+        if (settled) return;
+        settled = true;
+        if (recorder.state !== 'inactive') recorder.stop();
+        stopStream();
+        reject(error);
+      };
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size) chunks.push(event.data);
+      };
+      recorder.onerror = () => fail(new Error('No se pudo procesar el video para descargarlo.'));
+      recorder.onstop = () => {
+        stopStream();
+        if (settled) return;
+        settled = true;
+        const result = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+        if (!result.size) {
+          reject(new Error('No se pudo generar el video con el filtro aplicado.'));
+          return;
+        }
+        resolve(result);
+      };
+      video.onended = () => {
+        if (recorder.state !== 'inactive') recorder.stop();
+      };
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      recorder.start();
+      video.play().then(drawFrame).catch((error) => {
+        fail(new Error(error.message || 'No se pudo reproducir el video para descargarlo.'));
+      });
+    });
+  } finally {
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    URL.revokeObjectURL(sourceUrl);
+  }
+}
+
+function drawDownloadSparkles(context, width, height) {
+  const positions = [[0.14, 0.2], [0.74, 0.18], [0.87, 0.42], [0.22, 0.7], [0.66, 0.78], [0.48, 0.35]];
+  const size = Math.max(8, Math.min(width, height) * 0.025);
+  context.save();
+  context.fillStyle = '#ffdf00';
+  context.shadowColor = '#ffffff';
+  context.shadowBlur = Math.max(5, width / 100);
+  positions.forEach(([x, y]) => {
+    context.beginPath();
+    for (let point = 0; point < 8; point++) {
+      const angle = (point * Math.PI) / 4 - Math.PI / 2;
+      const radius = point % 2 === 0 ? size : size * 0.25;
+      const px = x * width + Math.cos(angle) * radius;
+      const py = y * height + Math.sin(angle) * radius;
+      if (point === 0) context.moveTo(px, py);
+      else context.lineTo(px, py);
+    }
+    context.closePath();
+    context.fill();
+  });
+  context.restore();
+}
+
+function getVideoExtension(mimeType) {
+  return mimeType.includes('webm') ? 'webm' : 'mp4';
+}
+
+function downloadBlob(blob, filename) {
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
 }
 
 function updateActiveFilterUI() {

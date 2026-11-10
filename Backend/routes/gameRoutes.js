@@ -7,6 +7,7 @@ const { sumarPuntosTrivia, tirarGacha, obtenerInventario, obtenerPerfil } = requ
 const {
   obtenerFeedEquipo,
   obtenerGaleriaEquipo,
+  descargarMediaEquipo,
   publicarMediaEquipo,
   publicarMediaGaleria,
   validarEquipoFeed
@@ -22,5 +23,6 @@ router.get('/team-feed/:teamKey', validarEquipoFeed, obtenerFeedEquipo);
 router.post('/team-feed/:teamKey', validarEquipoFeed, recibirMediaDeEquipo, publicarMediaEquipo);
 router.get('/team-gallery/:teamKey', validarEquipoFeed, obtenerGaleriaEquipo);
 router.post('/team-gallery/:teamKey', validarEquipoFeed, recibirMediaDeEquipo, publicarMediaGaleria);
+router.get('/team-media/:mediaType/:teamKey/:publicationId/download', descargarMediaEquipo);
 
 module.exports = router;
