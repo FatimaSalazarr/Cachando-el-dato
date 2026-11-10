@@ -231,6 +231,10 @@ function renderProfileData() {
   if (avatarEl && avatarFallbackEl) {
     avatarEl.hidden = !state.currentUser.fotoPerfil;
     avatarFallbackEl.hidden = Boolean(state.currentUser.fotoPerfil);
+    avatarEl.onerror = () => {
+      avatarEl.hidden = true;
+      avatarFallbackEl.hidden = false;
+    };
     if (state.currentUser.fotoPerfil) avatarEl.src = state.currentUser.fotoPerfil;
     else avatarEl.removeAttribute('src');
   }

@@ -15,7 +15,7 @@
 <div id="ar-3d-container">
   
   <a-scene embedded mindar-image="imageTargetSrc: targets/equipos-liga.mind; autoStart: false; uiLoading: no; uiScanning: no;" 
-           color-space="sRGB" renderer="colorManagement: true" 
+         color-space="sRGB" renderer="colorManagement: true; alpha: true"
            vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <!-- PRECARGA DE MODELOS (Evita errores 404 y bloqueos de JSON) -->
@@ -34,48 +34,47 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
     
-    <!-- LOS MODELOS VUELVEN A ESTAR ADENTRO DE SU DETECTOR -->
-    <!-- Mantenemos la escala en 5 y la luz ambiental básica -->
+    <!-- El punto de giro se centra por modelo; se conservan materiales y escala original. -->
     <a-light type="ambient" color="#ffffff" intensity="1.5"></a-light>
 
     <a-entity id="target-0" mindar-image-target="targetIndex: 0">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#acereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#acereros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
     
     <a-entity id="target-1" mindar-image-target="targetIndex: 1">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#algodoneros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#algodoneros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
     
     <a-entity id="target-2" mindar-image-target="targetIndex: 2">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#tecos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#tecos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-3" mindar-image-target="targetIndex: 3">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#calientes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#calientes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-4" mindar-image-target="targetIndex: 4">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#charros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#charros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-5" mindar-image-target="targetIndex: 5">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#toros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#toros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-6" mindar-image-target="targetIndex: 6">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#rieleros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#rieleros" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-7" mindar-image-target="targetIndex: 7">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#saraperos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#saraperos" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-8" mindar-image-target="targetIndex: 8">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#sultanes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#sultanes" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
 
     <a-entity id="target-9" mindar-image-target="targetIndex: 9">
-      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="1 1 1" src="#dorados" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
+      <a-gltf-model rotation="0 0 0" position="0 0 0.12" scale="20 20 20" src="#dorados" animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-gltf-model>
     </a-entity>
   </a-scene>
 
