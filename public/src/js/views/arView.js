@@ -409,6 +409,8 @@ export function openScannerView() {
   const detectedContent = document.getElementById('ar-detected-content');
   const modal = document.getElementById('ar-experience-modal');
   detectedTeamKey = null;
+  clearDetectedARModels();
+  resetDetectedTeamInfo();
   selectCaptureFilter('none');
   updateCaptureButtons();
   setCaptureStatus('Reconoce un equipo para activar la captura.');
@@ -423,6 +425,7 @@ export function openVRDirectly(teamKey) {
   state.setSelectedTeam(detectedTeamKey);
   const team = teamsData[state.currentSelectedTeamKey];
   if (!team) return;
+  clearDetectedARModels();
 
   const titleEl = document.getElementById('ar-team-title');
   const summaryEl = document.getElementById('ar-team-summary');
@@ -461,12 +464,32 @@ export function closeARView() {
   }
   
   document.getElementById('ar-experience-modal')?.classList.add('hidden');
+  detectedTeamKey = null;
+  clearDetectedARModels();
+  resetDetectedTeamInfo();
+  updateCaptureButtons();
+  setCaptureStatus('Reconoce un equipo para activar la captura.');
   
   // Ocultar también el modal de ayuda si estuviera abierto
   const arHelpModal = document.getElementById('ar-help-modal');
   if (arHelpModal) arHelpModal.style.display = 'none';
 
   isSpinning = false;
+}
+
+function clearDetectedARModels() {
+  document.querySelectorAll('#ar-3d-container a-gltf-model').forEach((model) => {
+    model.setAttribute('visible', false);
+    model.components.animation?.pause();
+    model.parentElement?.setAttribute('data-target-found', 'false');
+  });
+}
+
+function resetDetectedTeamInfo() {
+  const titleEl = document.getElementById('ar-team-title');
+  const summaryEl = document.getElementById('ar-team-summary');
+  if (titleEl) titleEl.textContent = 'Buscando marcador...';
+  if (summaryEl) summaryEl.textContent = 'Apunta con la cámara al logo de un equipo.';
 }
 
 export function toggleModelSpin() {
