@@ -455,6 +455,10 @@
   transition: transform 0.1s ease;
 }
 
+.ar-spin-toggle {
+  width: 84px;
+}
+
 .cube-btn-green:active {
   transform: scale(0.95);
 }

@@ -16,6 +16,8 @@ export function initTeamDetailView(onBackCallback, onOpenARCallback, onGoToTrivi
   const btnTrivia = document.getElementById('btn-detail-to-trivia');
   const btnOpenEffects = document.getElementById('btn-open-effects');
   const btnRefreshFeed = document.getElementById('btn-refresh-team-feed');
+  const btnUploadFeed = document.getElementById('btn-team-feed-upload');
+  const feedFileInput = document.getElementById('team-feed-file');
   const btnUploadGallery = document.getElementById('btn-team-gallery-upload');
   const galleryFileInput = document.getElementById('team-gallery-file');
 
@@ -24,6 +26,19 @@ export function initTeamDetailView(onBackCallback, onOpenARCallback, onGoToTrivi
   if (btnTrivia) btnTrivia.onclick = () => onGoToTriviaCallback();
   if (btnRefreshFeed) {
     btnRefreshFeed.onclick = () => renderTeamFanFeed(state.currentSelectedTeamKey);
+  }
+  if (btnUploadFeed && feedFileInput) {
+    btnUploadFeed.onclick = () => {
+      if (!state.currentUser.token) {
+        const status = document.getElementById('team-feed-status');
+        if (status) status.textContent = 'Inicia sesión para subir una foto o video al feed.';
+        return;
+      }
+      feedFileInput.click();
+    };
+  }
+  if (feedFileInput) {
+    feedFileInput.onchange = () => uploadTeamMedia(feedFileInput, 'feed');
   }
   if (btnUploadGallery && galleryFileInput) {
     btnUploadGallery.onclick = () => {
@@ -36,7 +51,7 @@ export function initTeamDetailView(onBackCallback, onOpenARCallback, onGoToTrivi
     };
   }
   if (galleryFileInput) {
-    galleryFileInput.onchange = () => uploadTeamGalleryMedia(galleryFileInput);
+    galleryFileInput.onchange = () => uploadTeamMedia(galleryFileInput, 'gallery');
   }
 
   if (btnOpenEffects) {
@@ -331,12 +346,12 @@ async function renderTeamFanFeed(teamKey) {
   if (refreshButton) refreshButton.disabled = true;
   try {
     const { publicaciones } = await apiRequest(`/game/team-feed/${encodeURIComponent(teamKey)}`);
-    if (state.currentSelectedTeamKey !== teamKey) return;
+    if (state.currentSelectedTeamKey !== teamKey) return false;
     if (status) status.textContent = '';
 
     if (!Array.isArray(publicaciones) || publicaciones.length === 0) {
       renderFeedEmpty(grid, 'Sé el primero en compartir una foto o video de este equipo.');
-      return;
+      return true;
     }
 
     publicaciones.forEach((post) => {
@@ -400,8 +415,9 @@ async function renderTeamFanFeed(teamKey) {
       });
       grid.appendChild(card);
     });
+    return true;
   } catch (error) {
-    if (state.currentSelectedTeamKey !== teamKey) return;
+    if (state.currentSelectedTeamKey !== teamKey) return false;
     console.error('Error al cargar las publicaciones del equipo:', error);
     if (status) {
       status.textContent = error.status === 401
@@ -415,6 +431,7 @@ async function renderTeamFanFeed(teamKey) {
         : 'Tus fotos y las de la afición aparecerán aquí.',
       error.status === 401 ? null : () => renderTeamFanFeed(teamKey)
     );
+    return false;
   } finally {
     if (refreshButton) refreshButton.disabled = false;
   }
@@ -439,20 +456,22 @@ function renderFeedEmpty(grid, message, retry) {
   grid.appendChild(empty);
 }
 
-async function uploadTeamGalleryMedia(fileInput) {
+async function uploadTeamMedia(fileInput, destination) {
   const file = fileInput.files?.[0];
   if (!file) return;
 
-  const status = document.getElementById('team-gallery-status');
-  const captionInput = document.getElementById('team-gallery-caption-input');
-  const uploadButton = document.getElementById('btn-team-gallery-upload');
+  const isFeed = destination === 'feed';
+  const sectionName = isFeed ? 'el feed' : 'la galería';
+  const status = document.getElementById(isFeed ? 'team-feed-status' : 'team-gallery-status');
+  const captionInput = document.getElementById(isFeed ? 'team-feed-caption-input' : 'team-gallery-caption-input');
+  const uploadButton = document.getElementById(isFeed ? 'btn-team-feed-upload' : 'btn-team-gallery-upload');
   const teamKey = state.currentSelectedTeamKey;
   const allowedTypes = new Set([
     'image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'
   ]);
 
   if (!state.currentUser.token) {
-    if (status) status.textContent = 'Inicia sesión para subir una foto o video a la galería.';
+    if (status) status.textContent = `Inicia sesión para subir una foto o video a ${sectionName}.`;
     fileInput.value = '';
     return;
   }
@@ -469,29 +488,31 @@ async function uploadTeamGalleryMedia(fileInput) {
 
   fileInput.disabled = true;
   if (uploadButton) uploadButton.disabled = true;
-  if (status) status.textContent = 'Subiendo a la galería…';
+  if (status) status.textContent = `Subiendo ${file.type.startsWith('video/') ? 'video' : 'foto'} a ${sectionName}…`;
 
   try {
     const formData = new FormData();
     formData.append('media', file);
     formData.append('caption', captionInput?.value.trim() || '');
 
-    await apiRequest(`/game/team-gallery/${encodeURIComponent(teamKey)}`, {
+    await apiRequest(`/game/team-${destination}/${encodeURIComponent(teamKey)}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${state.currentUser.token}` },
       body: formData
     });
     fileInput.value = '';
     if (captionInput) captionInput.value = '';
-    const galleryLoaded = await loadTeamGallery(teamKey);
+    const refreshed = isFeed
+      ? await renderTeamFanFeed(teamKey)
+      : await loadTeamGallery(teamKey);
     if (state.currentSelectedTeamKey !== teamKey) return;
     if (status) {
-      status.textContent = galleryLoaded
-        ? '¡Tu archivo ya está en la galería del estadio!'
-        : 'Archivo subido, pero no se pudo actualizar la galería.';
+      status.textContent = refreshed
+        ? `¡Tu ${file.type.startsWith('video/') ? 'video' : 'foto'} ya está en ${isFeed ? 'el feed' : 'la galería del estadio'}!`
+        : `Archivo subido, pero no se pudo actualizar ${sectionName}.`;
     }
   } catch (error) {
-    console.error('Error al subir un archivo a la galería del equipo:', error);
+    console.error(`Error al subir un archivo a ${sectionName} del equipo:`, error);
     if (state.currentSelectedTeamKey !== teamKey) return;
     if (status) {
       status.textContent = error.status === 401
