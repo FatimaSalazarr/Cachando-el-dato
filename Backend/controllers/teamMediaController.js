@@ -10,7 +10,6 @@ const MIME_PREFIXES = {
   'image/jpeg': Buffer.from([0xff, 0xd8, 0xff]),
   'image/png': Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
   'image/webp': Buffer.from('RIFF'),
-  'video/mp4': Buffer.from('ftyp'),
   'video/webm': Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
 };
 const FILE_EXTENSIONS = {
@@ -18,7 +17,20 @@ const FILE_EXTENSIONS = {
   'image/png': '.png',
   'image/webp': '.webp',
   'video/mp4': '.mp4',
-  'video/webm': '.webm'
+  'video/webm': '.webm',
+  'video/quicktime': '.mov',
+  'video/x-m4v': '.m4v',
+  'video/x-msvideo': '.avi',
+  'video/avi': '.avi',
+  'video/x-matroska': '.mkv',
+  'video/mpeg': '.mpeg',
+  'video/ogg': '.ogv',
+  'video/x-flv': '.flv',
+  'video/x-ms-wmv': '.wmv',
+  'video/x-ms-asf': '.asf',
+  'video/mp2t': '.ts',
+  'video/3gpp': '.3gp',
+  'video/3gpp2': '.3g2'
 };
 
 const removeUploadedFile = async (filePath) => {
@@ -83,18 +95,48 @@ const validarEquipoFeed = (req, res, next) => {
 const validarTipoReal = async (file) => {
   const handle = await fs.open(file.path, 'r');
   try {
-    const header = Buffer.alloc(12);
+    const header = Buffer.alloc(204);
     const { bytesRead } = await handle.read(header, 0, header.length, 0);
     const mimeType = normalizeMimeType(file.mimetype);
+    if ([
+      'video/mp4', 'video/quicktime', 'video/x-m4v', 'video/3gpp', 'video/3gpp2'
+    ].includes(mimeType)) {
+      return bytesRead >= 8 && header.toString('ascii', 4, 8) === 'ftyp';
+    }
+    if (mimeType === 'video/webm' || mimeType === 'video/x-matroska') {
+      return bytesRead >= 4 && header.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
+    }
+    if (mimeType === 'video/x-msvideo' || mimeType === 'video/avi') {
+      return bytesRead >= 12
+        && header.toString('ascii', 0, 4) === 'RIFF'
+        && header.toString('ascii', 8, 12) === 'AVI ';
+    }
+    if (mimeType === 'video/ogg') return header.toString('ascii', 0, 4) === 'OggS';
+    if (mimeType === 'video/x-flv') return header.toString('ascii', 0, 3) === 'FLV';
+    if (mimeType === 'video/x-ms-wmv' || mimeType === 'video/x-ms-asf') {
+      return header.subarray(0, 16).equals(Buffer.from([
+        0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11,
+        0xa6, 0xd9, 0x00, 0xaa, 0x00, 0x62, 0xce, 0x6c
+      ]));
+    }
+    if (mimeType === 'video/mp2t') {
+      return (bytesRead >= 189 && header[0] === 0x47 && header[188] === 0x47)
+        || (bytesRead >= 197 && header[4] === 0x47 && header[196] === 0x47);
+    }
+    if (mimeType === 'video/mpeg') {
+      return bytesRead >= 4
+        && header[0] === 0
+        && header[1] === 0
+        && header[2] === 1
+        && [0xb3, 0xb8, 0xba].includes(header[3]);
+    }
+
     const prefix = MIME_PREFIXES[mimeType];
     if (!prefix || bytesRead < prefix.length || !header.subarray(0, prefix.length).equals(prefix)) {
       return false;
     }
     if (mimeType === 'image/webp') {
       return header.toString('ascii', 8, 12) === 'WEBP';
-    }
-    if (mimeType === 'video/mp4') {
-      return header.toString('ascii', 4, 8) === 'ftyp';
     }
     return true;
   } finally {
