@@ -14,7 +14,20 @@ const extensionsByType = {
   'image/png': '.png',
   'image/webp': '.webp',
   'video/mp4': '.mp4',
-  'video/webm': '.webm'
+  'video/webm': '.webm',
+  'video/quicktime': '.mov',
+  'video/x-m4v': '.m4v',
+  'video/x-msvideo': '.avi',
+  'video/avi': '.avi',
+  'video/x-matroska': '.mkv',
+  'video/mpeg': '.mpeg',
+  'video/ogg': '.ogv',
+  'video/x-flv': '.flv',
+  'video/x-ms-wmv': '.wmv',
+  'video/x-ms-asf': '.asf',
+  'video/mp2t': '.ts',
+  'video/3gpp': '.3gp',
+  'video/3gpp2': '.3g2'
 };
 
 const normalizeMimeType = (mimeType) => mimeType.split(';', 1)[0].trim().toLowerCase();
@@ -29,7 +42,7 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024, files: 1 },
   fileFilter: (req, file, callback) => {
     if (!Object.hasOwn(extensionsByType, normalizeMimeType(file.mimetype))) {
-      callback(new Error('Sube una imagen JPG, PNG, WebP o un video MP4/WebM.'));
+      callback(new Error('Sube una imagen JPG, PNG o WebP, o un video en un formato compatible.'));
       return;
     }
     callback(null, true);

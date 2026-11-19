@@ -467,7 +467,11 @@ async function uploadTeamMedia(fileInput, destination) {
   const uploadButton = document.getElementById(isFeed ? 'btn-team-feed-upload' : 'btn-team-gallery-upload');
   const teamKey = state.currentSelectedTeamKey;
   const allowedTypes = new Set([
-    'image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'
+    'image/jpeg', 'image/png', 'image/webp',
+    'video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v',
+    'video/x-msvideo', 'video/avi', 'video/x-matroska', 'video/mpeg',
+    'video/ogg', 'video/x-flv', 'video/x-ms-wmv', 'video/x-ms-asf',
+    'video/mp2t', 'video/3gpp', 'video/3gpp2'
   ]);
 
   if (!state.currentUser.token) {
@@ -476,7 +480,7 @@ async function uploadTeamMedia(fileInput, destination) {
     return;
   }
   if (!allowedTypes.has(file.type)) {
-    if (status) status.textContent = 'Elige una imagen JPG, PNG o WebP, o un video MP4 o WebM.';
+    if (status) status.textContent = 'Elige una imagen JPG, PNG o WebP, o un video en un formato compatible.';
     fileInput.value = '';
     return;
   }
