@@ -8,6 +8,7 @@ let detectedTeamKey = null;
 const modelBasePositions = new WeakMap();
 let openTeamDetailCallback = null;
 let arConfetti = null;
+let isModelRotationEnabled = true;
 let recordingSession = null;
 let activeFilter = 'none';
 let modelEventsAdded = false;
@@ -44,6 +45,7 @@ export function initARView(onOpenFullInfoCallback) {
   openTeamDetailCallback = onOpenFullInfoCallback;
   const btnClose = document.getElementById('btn-close-ar');
   const btnConfetti = document.getElementById('btn-ar-confetti');
+  const btnToggleSpin = document.getElementById('btn-ar-toggle-spin');
   const btnCapture = document.getElementById('btn-camera-capture');
   const btnMoreInfo = document.getElementById('btn-ar-more-info');
   const confettiCanvas = document.getElementById('ar-confetti-canvas');
@@ -59,6 +61,13 @@ export function initARView(onOpenFullInfoCallback) {
 
   if (btnClose) btnClose.onclick = () => closeARView();
   if (btnConfetti) btnConfetti.onclick = () => triggerConfetti();
+  if (btnToggleSpin) {
+    btnToggleSpin.onclick = () => {
+      isModelRotationEnabled = !isModelRotationEnabled;
+      updateModelRotation();
+    };
+    updateModelRotation();
+  }
   if (btnCapture) {
     btnCapture.onpointerdown = (event) => {
       if (btnCapture.disabled) return;
@@ -552,7 +561,8 @@ function abrirEscenaAR() {
           if (model) {
             model.setAttribute('visible', true);
             if (model.getObject3D('mesh')) fitARModel(model);
-            model.components.animation?.play();
+            if (isModelRotationEnabled) model.components.animation?.play();
+            else model.components.animation?.pause();
           }
           if (titleEl) titleEl.textContent = team.name;
           if (summaryEl) summaryEl.textContent = `¡Capturado! ${team.city} · ${team.stadium}`;
@@ -615,7 +625,7 @@ function initializeARModels() {
   if (modelEventsAdded) return;
   document.querySelectorAll('#ar-3d-container a-gltf-model').forEach((model) => {
     model.addEventListener('model-loaded', () => {
-      if (model.parentElement?.getAttribute('data-target-found') === 'true') {
+      if (isModelRotationEnabled && model.parentElement?.getAttribute('data-target-found') === 'true') {
         fitARModel(model);
         model.components.animation?.play();
       } else {
@@ -629,6 +639,26 @@ function initializeARModels() {
     if (model.getObject3D('mesh')) model.components.animation?.pause();
   });
   modelEventsAdded = true;
+}
+
+function updateModelRotation() {
+  const button = document.getElementById('btn-ar-toggle-spin');
+  if (button) {
+    button.setAttribute('aria-pressed', String(isModelRotationEnabled));
+    button.title = isModelRotationEnabled ? 'Detener giro del modelo' : 'Reanudar giro del modelo';
+    const icon = button.querySelector('i');
+    const label = button.querySelector('span');
+    if (icon) icon.className = `fa-solid ${isModelRotationEnabled ? 'fa-pause' : 'fa-play'}`;
+    if (label) label.textContent = isModelRotationEnabled ? 'DETENER GIRO' : 'GIRAR MODELO';
+  }
+
+  document.querySelectorAll('#ar-3d-container a-gltf-model').forEach((model) => {
+    if (isModelRotationEnabled && model.parentElement?.getAttribute('data-target-found') === 'true') {
+      model.components.animation?.play();
+    } else {
+      model.components.animation?.pause();
+    }
+  });
 }
 
 function fitARModel(model) {
